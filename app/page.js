@@ -54,14 +54,17 @@ function Field({ label, value, onChange, type = "text", placeholder = "", requir
   </label>;
 }
 
-function SelectField({ label, value, onChange, options, placeholder = "নির্বাচন করুন", required = true }) {
-  return <label className="field-wrap">
-    <span>{label}</span>
-    <select className="field-control" value={value} onChange={(e) => onChange(e.target.value)} required={required}>
-      <option value="">{placeholder}</option>
-      {options.map(([v, text]) => <option value={v} key={v}>{text}</option>)}
-    </select>
-  </label>;
+function SelectField({ label, value, onChange, options, placeholder = "নির্বাচন করুন", required = true, emptyActionLabel, onEmptyAction }) {
+  return <div className="select-field-shell">
+    <label className="field-wrap">
+      <span>{label}</span>
+      <select className="field-control" value={value} onChange={(e) => onChange(e.target.value)} required={required}>
+        <option value="">{options.length ? placeholder : "এখনো কেউ যোগ করা হয়নি"}</option>
+        {options.map(([v, text]) => <option value={v} key={v}>{text}</option>)}
+      </select>
+    </label>
+    {!options.length && emptyActionLabel && onEmptyAction ? <button type="button" className="empty-select-action" onClick={onEmptyAction}>＋ {emptyActionLabel}</button> : null}
+  </div>;
 }
 
 function TextArea({ label, value, onChange, placeholder = "" }) {
@@ -644,7 +647,7 @@ export default function Home() {
       <PageHead eyebrow="PURCHASE ENTRY" title="নতুন মাল কেনার হিসাব" subtitle="একটি চালানে একাধিক ডিজাইন ও জোড়া যোগ করতে পারবেন।" onBack={() => go("dashboard")} />
       <section className="panel">
         <form onSubmit={savePurchase}>
-          <SelectField label="মহাজন নির্বাচন" value={purchaseForm.supplier_id} onChange={(v) => setPurchaseForm({ ...purchaseForm, supplier_id: v })} options={data.suppliers.map((s) => [s.id, (s.shop_name || s.owner_name) + (s.phone ? " · " + s.phone : "")])} />
+          <SelectField label="মহাজন নির্বাচন" value={purchaseForm.supplier_id} onChange={(v) => setPurchaseForm({ ...purchaseForm, supplier_id: v })} options={data.suppliers.map((s) => [s.id, (s.shop_name || s.owner_name) + (s.phone ? " · " + s.phone : "")])} emptyActionLabel="মহাজন যোগ করুন" onEmptyAction={() => go("suppliers")} />
           <Field label="ক্রয়ের তারিখ" type="date" value={purchaseForm.purchase_date} onChange={(v) => setPurchaseForm({ ...purchaseForm, purchase_date: v })} required />
           <Field label="চালান নম্বর (থাকলে)" value={purchaseForm.invoice_number} onChange={(v) => setPurchaseForm({ ...purchaseForm, invoice_number: v })} />
           <LineItems items={purchaseLines} setItems={setPurchaseLines} />
@@ -670,7 +673,7 @@ export default function Home() {
     {active === "payments" ? <>
       <PageHead eyebrow="SUPPLIER PAYMENT" title="মহাজনকে টাকা পরিশোধ" subtitle="এখানে দেওয়া টাকা মহাজনের বাকি থেকে কমবে।" onBack={() => go("dashboard")} />
       <section className="panel"><form onSubmit={savePayment}>
-        <SelectField label="মহাজন" value={paymentForm.supplier_id || selectedSupplier} onChange={(v) => { setSelectedSupplier(v); setPaymentForm({ ...paymentForm, supplier_id: v }); }} options={data.suppliers.map((s) => [s.id, s.shop_name || s.owner_name])} />
+        <SelectField label="মহাজন" value={paymentForm.supplier_id || selectedSupplier} onChange={(v) => { setSelectedSupplier(v); setPaymentForm({ ...paymentForm, supplier_id: v }); }} options={data.suppliers.map((s) => [s.id, s.shop_name || s.owner_name])} emptyActionLabel="মহাজন যোগ করুন" onEmptyAction={() => go("suppliers")} />
         <Field label="টাকা দেওয়ার তারিখ" type="date" value={paymentForm.payment_date} onChange={(v) => setPaymentForm({ ...paymentForm, payment_date: v })} />
         <Field label="কত টাকা দিয়েছেন?" type="number" min="0.01" step="0.01" value={paymentForm.amount} onChange={(v) => setPaymentForm({ ...paymentForm, amount: v })} required />
         <SelectField label="পেমেন্টের মাধ্যম" value={paymentForm.payment_method} onChange={(v) => setPaymentForm({ ...paymentForm, payment_method: v })} options={PAYMENT_METHODS} />
@@ -686,7 +689,7 @@ export default function Home() {
     {active === "returns" ? <>
       <PageHead eyebrow="PURCHASE RETURN" title="মহাজনকে মাল ফেরত" subtitle="বাকিতে সমন্বয় এবং নগদ টাকা ফেরত—দুটি আলাদা হিসাব।" onBack={() => go("dashboard")} />
       <section className="panel"><form onSubmit={saveReturn}>
-        <SelectField label="মহাজন" value={returnForm.supplier_id || selectedSupplier} onChange={(v) => { setSelectedSupplier(v); setReturnForm({ ...returnForm, supplier_id: v }); }} options={data.suppliers.map((s) => [s.id, s.shop_name || s.owner_name])} />
+        <SelectField label="মহাজন" value={returnForm.supplier_id || selectedSupplier} onChange={(v) => { setSelectedSupplier(v); setReturnForm({ ...returnForm, supplier_id: v }); }} options={data.suppliers.map((s) => [s.id, s.shop_name || s.owner_name])} emptyActionLabel="মহাজন যোগ করুন" onEmptyAction={() => go("suppliers")} />
         <Field label="ফেরতের তারিখ" type="date" value={returnForm.return_date} onChange={(v) => setReturnForm({ ...returnForm, return_date: v })} />
         <SelectField label="কীভাবে টাকা সমন্বয় হলো?" value={returnForm.settlement_type} onChange={(v) => setReturnForm({ ...returnForm, settlement_type: v })} options={[
           ["credit_adjustment", "মহাজনের বাকি থেকে কমবে"],
@@ -702,21 +705,29 @@ export default function Home() {
     </> : null}
 
     {active === "employees" ? <>
-      <PageHead eyebrow="EMPLOYEES" title="কর্মচারীর হিসাব" subtitle="কর্মচারী বিক্রি হলো দৈনিক বিক্রির ভাগ—এটি দৈনিক মোট বিক্রিতে আবার যোগ হবে না।" onBack={() => go("dashboard")} />
-      <section className="panel"><h2>＋ কর্মচারী যোগ করুন</h2><form onSubmit={saveEmployee}>
-        <Field label="কর্মচারীর নাম" value={employeeForm.full_name} onChange={(v) => setEmployeeForm({ ...employeeForm, full_name: v })} required />
+      <PageHead eyebrow="EMPLOYEES" title="কর্মচারী" subtitle="আগে কর্মচারীর নাম যোগ করুন, তারপর যেকোনো সময় তার বিক্রির টাকা লিখুন।" onBack={() => go("dashboard")} />
+      <section className="panel employee-add-panel"><div className="panel-title"><div><small>NEW TEAM MEMBER</small><h2>＋ কর্মচারী যোগ করুন</h2></div><span>নতুন নাম</span></div><form onSubmit={saveEmployee}>
+        <Field label="কর্মচারীর নাম" value={employeeForm.full_name} onChange={(v) => setEmployeeForm({ ...employeeForm, full_name: v })} required placeholder="নাম লিখুন" />
         <Field label="মোবাইল নম্বর" value={employeeForm.phone} onChange={(v) => setEmployeeForm({ ...employeeForm, phone: v })} />
-        <TextArea label="নোট" value={employeeForm.notes} onChange={(v) => setEmployeeForm({ ...employeeForm, notes: v })} />
+        <TextArea label="নোট (ইচ্ছা হলে)" value={employeeForm.notes} onChange={(v) => setEmployeeForm({ ...employeeForm, notes: v })} />
         <button className="primary-btn full-btn" disabled={busy}>কর্মচারী সংরক্ষণ করুন</button>
       </form></section>
-      <section className="panel"><h2>＋ কর্মচারীর বিক্রি লিখুন</h2><form onSubmit={saveEmployeeSale}>
-        <SelectField label="কর্মচারী" value={employeeSaleForm.employee_id} onChange={(v) => setEmployeeSaleForm({ ...employeeSaleForm, employee_id: v })} options={data.employees.map((e) => [e.id, e.full_name])} />
+      <section className="panel">
+        <div className="panel-title"><div><small>YOUR TEAM</small><h2>কর্মচারী তালিকা</h2></div><span>{data.employees.length} জন</span></div>
+        {data.employees.length ? <div className="employee-list">{data.employees.map((e, index) => <div className="employee-card" key={e.id}>
+          <div className="employee-avatar">{(e.full_name || "ক").trim().slice(0,1)}</div>
+          <div className="employee-info"><b>{e.full_name}</b><small>{e.phone || "মোবাইল নম্বর দেওয়া হয়নি"}</small></div>
+          <div className="employee-total"><small>এই মাসে বিক্রি</small><strong>{money(data.employeeSales.filter((row) => row.employee_id === e.id && row.sale_date >= monthStart(today) && row.sale_date <= today).reduce((n, row) => n + Number(row.sales_amount || 0), 0))}</strong></div>
+        </div>)}</div> : <Empty>এখনো কোনো কর্মচারী যোগ হয়নি। উপরের ফর্মে নাম লিখে যোগ করুন।</Empty>}
+      </section>
+      <section className="panel employee-entry-panel"><div className="panel-title"><div><small>QUICK SALES ENTRY</small><h2>কর্মচারীর বিক্রি লিখুন</h2></div><span>প্রতিবার আলাদা হিসাব</span></div><form onSubmit={saveEmployeeSale}>
+        <SelectField label="কর্মচারী নির্বাচন করুন" value={employeeSaleForm.employee_id} onChange={(v) => setEmployeeSaleForm({ ...employeeSaleForm, employee_id: v })} options={data.employees.map((e) => [e.id, e.full_name])} emptyActionLabel="কর্মচারী যোগ করুন" onEmptyAction={() => go("employees")} />
         <Field label="তারিখ" type="date" value={employeeSaleForm.sale_date} onChange={(v) => setEmployeeSaleForm({ ...employeeSaleForm, sale_date: v })} />
-        <Field label="কর্মচারীর বিক্রির টাকা" type="number" min="0" step="0.01" value={employeeSaleForm.sales_amount} onChange={(v) => setEmployeeSaleForm({ ...employeeSaleForm, sales_amount: v })} required />
-        <TextArea label="নোট" value={employeeSaleForm.notes} onChange={(v) => setEmployeeSaleForm({ ...employeeSaleForm, notes: v })} />
+        <Field label="কর্মচারীর বিক্রির টাকা" type="number" min="0" step="0.01" value={employeeSaleForm.sales_amount} onChange={(v) => setEmployeeSaleForm({ ...employeeSaleForm, sales_amount: v })} required placeholder="যেমন: ৩০০" />
+        <TextArea label="নোট (ইচ্ছা হলে)" value={employeeSaleForm.notes} onChange={(v) => setEmployeeSaleForm({ ...employeeSaleForm, notes: v })} />
         <button className="primary-btn full-btn" disabled={busy || !data.employees.length}>বিক্রির হিসাব যোগ করুন</button>
       </form></section>
-      <section className="panel"><div className="panel-title"><h2>🏆 কর্মচারী লিডারবোর্ড</h2>
+      <section className="panel"><div className="panel-title"><div><small>TOP PERFORMERS</small><h2>🏆 কর্মচারী লিডারবোর্ড</h2></div>
         <select className="period-select" value={staffPeriod} onChange={(e) => setStaffPeriod(e.target.value)}><option value="today">আজ</option><option value="week">শেষ ৭ দিন</option><option value="month">এই মাস</option></select></div>
         {staffRank.length ? <div className="rank-list">{staffRank.map((e, index) => <div className="rank-row" key={e.id}><span className="rank-num">{index + 1}</span><b>{e.full_name}</b><strong>{money(e.total)}</strong></div>)}</div> : <Empty />}
       </section>
