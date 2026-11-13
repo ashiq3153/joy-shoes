@@ -1049,3 +1049,29 @@ button,input,select,textarea{font-family:inherit}button{-webkit-tap-highlight-co
   .dk-welcome-benefits b{font-size:9px}
   .dk-welcome-bottom{padding-left:16px;padding-right:16px}
 }
+
+
+/* Mobile welcome screen fix: keep benefit cards clear of the decorative wave */
+.dk-welcome-art {
+  min-height: 0;
+  padding-bottom: clamp(22px, 3svh, 34px);
+}
+.dk-welcome-benefits {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  margin-bottom: 0;
+}
+.dk-welcome-wave {
+  display: none !important;
+}
+.dk-welcome-bottom {
+  position: relative;
+  z-index: 3;
+  flex-shrink: 0;
+}
+@media (max-height: 760px) {
+  .dk-welcome-art {
+    padding-bottom: 18px;
+  }
+}
