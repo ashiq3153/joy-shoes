@@ -2,8 +2,8 @@
 import {money,dateTimeBn} from "../../lib/dokankhata/format";
 const MODULES=[
  {id:"products",title:"পণ্য / স্টক",sub:"পণ্যের তালিকা ও স্টক",icon:"📦",tone:"violet"},
- {id:"workspace",title:"মহাজন",sub:"সরবরাহকারী ও বাকি",icon:"🧰",tone:"orange"},
- {id:"workspace",title:"কর্মচারী",sub:"কর্মচারী ও বিক্রি",icon:"👥",tone:"blue"},
+ {id:"suppliers",title:"মহাজন",sub:"সরবরাহকারী ও বাকি",icon:"🧰",tone:"orange"},
+ {id:"employees",title:"কর্মচারী",sub:"কর্মচারী ও বিক্রি",icon:"👥",tone:"blue"},
  {id:"reports",title:"রিপোর্ট",sub:"দৈনিক ও মাসিক হিসাব",icon:"▤",tone:"red"},
  {id:"workspace",title:"ক্রয়ের হিসাব",sub:"মাল কেনা ও পেমেন্ট",icon:"🛍️",tone:"cyan"},
  {id:"profile",title:"দোকানের প্রোফাইল",sub:"নাম, ছবি ও ঠিকানা",icon:"🏪",tone:"pink"},
