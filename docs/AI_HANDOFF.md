@@ -42,7 +42,7 @@ This file is the handoff contract for ChatGPT, other AI agents and future develo
 7. Wait for Vercel deployment to be READY and verify the production URL before announcing.
 
 ## Suggested next phases
-- Phase 2: Shop-aware suppliers, employees, purchases, returns, cash movements, closings, legacy sales/expenses, reporting views and RPCs.
+- Phase 2: Finish shop-aware purchases, supplier payments, purchase returns, employee-sales attribution, cash movements, closings, legacy sales/expenses, reporting views and RPCs. Supplier and employee directory lists have been shop-scoped, but their legacy transaction modules remain incomplete.
 - Phase 3: Secure Super Admin console, customer search, shop status, subscription review, audit trail and configurable payment instructions.
 - Phase 4: Automated bKash/Nagad/payment gateway, receipt verification and webhooks.
 - Phase 5: PWA/offline, employee invites, permissions, exports, backup and domain migration.
@@ -56,6 +56,8 @@ This file is the handoff contract for ChatGPT, other AI agents and future develo
 - Manual payment destination details are not configured. The customer-facing payment submit form is intentionally disabled; do not collect TxIDs or accept money until official receiver instructions and admin review are available.
 - Shop creation uses the SECURITY INVOKER RPC `create_shop_with_trial`, which atomically writes the shop, owner membership and 7-day trial under RLS.
 - The active-shop data loader uses a request sequence guard to prevent slow responses from a previously selected shop replacing the current shop's data.
+- Suppliers and employees now have required shop_id columns. Existing rows were backfilled and preserved; supplier_ledger_view is SECURITY INVOKER and has shop_id appended. New dashboard directories filter by the selected shop. Existing table RLS still checks owner_id = auth.uid(); manager/staff permissions are not active.
+- The legacy workspace filters supplier and employee directory reads/writes to the primary shop. Purchases, supplier payments, returns, employee_sales, cash movements, closings, old sales/expenses, and audit logs still need a full shop_id migration.
 - Focused smoke tests verified cross-user read isolation for shops, shop_sales, shop_expenses and products, and rejected a cross-owner shop_sales insert. This does not certify the legacy owner-scoped tables or manager/staff permission model.
 
 ## Repository
