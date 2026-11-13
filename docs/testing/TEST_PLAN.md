@@ -36,7 +36,7 @@ Never use real customer money, genuine bKash/Nagad transaction IDs, or real cust
 | RLS-03 | User B reads User A's shop_expenses | Zero rows | PASS — SQL smoke test |
 | RLS-04 | User B reads User A's products | Zero rows | PASS — SQL smoke test |
 | RLS-05 | User A creates own shop, membership and trial | All three created together | PASS — SQL smoke test |
-| RLS-06 | User B attempts to insert a sale into User A's shop | RLS rejects the insert | Pending dedicated negative test |
+| RLS-06 | User B attempts to insert a sale into User A's shop | RLS rejects the insert | PASS — SQL negative test returned 42501 row-level security violation |
 | RLS-07 | Manager/staff permissions | Only active membership with permitted role can access shop | Pending; invitation/role UI not implemented |
 
 The current tests are focused SQL smoke checks. Run the full matrix again after any policy, schema, RPC, or membership change. Do not claim the entire app is penetration-tested.
