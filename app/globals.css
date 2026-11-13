@@ -984,3 +984,68 @@ button,input,select,textarea{font-family:inherit}button{-webkit-tap-highlight-co
  .dk-welcome-benefits{gap:6px}.dk-welcome-benefits>div{padding:10px 3px}.dk-welcome-benefits small{font-size:8px}
  .dk-auth-card{padding:19px}.dk-setup-card{padding:18px}
 }
+
+
+/* DokanKhata welcome screen: fit the complete intro inside the mobile viewport */
+.dk-welcome-screen{
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  max-width:560px;
+  height:100svh;
+  min-height:0;
+  margin:0 auto;
+  padding:0;
+  overflow:hidden;
+  background:#f6faf7;
+}
+.dk-welcome-art{
+  flex:1 1 auto;
+  min-height:0;
+  justify-content:center;
+  padding:clamp(22px,4.2svh,42px) 22px 62px;
+  border-radius:0 0 34px 34px;
+}
+.dk-welcome-logo{width:clamp(82px,12svh,110px);height:clamp(82px,12svh,110px);border-radius:27px}
+.dk-brand-mark-svg{width:72%;height:72%}
+.dk-welcome-brand{margin-top:12px;font-size:clamp(34px,7svh,47px)}
+.dk-welcome-art h1{margin:12px 0 7px;font-size:clamp(22px,3.5svh,29px);line-height:1.42}
+.dk-welcome-art>p{font-size:clamp(12px,1.8svh,14px);line-height:1.7}
+.dk-welcome-benefits{gap:9px;margin-top:clamp(15px,2.8svh,25px)}
+.dk-welcome-benefits>div{min-width:0;padding:10px 5px 12px;border-radius:17px}
+.dk-welcome-benefits span{width:clamp(34px,5.5svh,43px);height:clamp(34px,5.5svh,43px);font-size:21px}
+.dk-welcome-benefits b{font-size:clamp(11px,1.8svh,14px);white-space:nowrap}
+.dk-welcome-benefits small{font-size:clamp(8px,1.35svh,10px);line-height:1.45}
+.dk-welcome-wave{bottom:-48px;height:100px}
+.dk-welcome-bottom{
+  flex:0 0 auto;
+  gap:clamp(7px,1.5svh,12px);
+  padding:12px 22px max(15px,env(safe-area-inset-bottom));
+}
+.dk-welcome-dots{margin-bottom:2px}
+.dk-welcome-bottom>div:nth-child(2) small{font-size:clamp(9px,1.5svh,11px)}
+.dk-welcome-bottom h2{font-size:clamp(18px,2.7svh,22px)}
+.dk-welcome-start{min-height:clamp(51px,7.5svh,62px);margin-top:2px;border-radius:16px;font-size:clamp(16px,2.5svh,19px)}
+.dk-welcome-signup{padding:2px 12px 0;font-size:12px}
+@media(max-height:760px){
+  .dk-welcome-art{padding-top:15px;padding-bottom:52px}
+  .dk-welcome-logo{width:76px;height:76px}
+  .dk-welcome-brand{margin-top:8px;font-size:33px}
+  .dk-welcome-art h1{margin:8px 0 5px;font-size:21px;line-height:1.35}
+  .dk-welcome-art>p{font-size:11px;line-height:1.5}
+  .dk-welcome-benefits{margin-top:12px;gap:6px}
+  .dk-welcome-benefits>div{padding:8px 3px}
+  .dk-welcome-benefits span{width:32px;height:32px;font-size:18px}
+  .dk-welcome-benefits b{font-size:10px}
+  .dk-welcome-benefits small{font-size:8px}
+  .dk-welcome-bottom{gap:6px;padding-top:8px}
+  .dk-welcome-bottom h2{font-size:17px}
+  .dk-welcome-start{min-height:48px}
+}
+@media(max-width:360px){
+  .dk-welcome-art{padding-left:13px;padding-right:13px}
+  .dk-welcome-benefits{gap:5px}
+  .dk-welcome-benefits>div{padding-left:2px;padding-right:2px}
+  .dk-welcome-benefits b{font-size:9px}
+  .dk-welcome-bottom{padding-left:16px;padding-right:16px}
+}
