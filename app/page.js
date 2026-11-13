@@ -494,7 +494,7 @@ export default function Home() {
     ["📦", "নতুন মাল কেনা", "ক্রয়, আইটেম ও ক্যাশ মেমো", "purchases", "purple"],
     ["💸", "খরচ", "দোকান ও পারিবারিক খরচ", "expenses", "yellow"],
     ["🧑‍💼", "কর্মচারী", "কর্মচারীর বিক্রির হিসাব", "employees", "orange"],
-    ["🧮", "ক্যাশ মিল", "দিনের হাতে থাকা টাকা", "cash", "pink"]
+    ["🧮", "দিনের হিসাব মিলান", "দিন শেষে হাতে থাকা টাকা মিলান", "cash", "pink"]
   ];
 
   return <main className="shell app-shell">
