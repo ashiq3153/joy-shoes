@@ -52,6 +52,8 @@ create unique index if not exists products_shop_code_unique
   on public.products(shop_id, product_code) where product_code is not null and btrim(product_code) <> '';
 create index if not exists products_shop_name_idx on public.products(shop_id, product_name);
 create index if not exists products_shop_barcode_idx on public.products(shop_id, barcode);
+create index if not exists products_created_by_idx on public.products(created_by);
+create index if not exists shop_memberships_user_id_idx on public.shop_memberships(user_id);
 
 alter table public.shops enable row level security;
 alter table public.shop_memberships enable row level security;
