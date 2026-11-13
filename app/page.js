@@ -220,9 +220,9 @@ export default function Home() {
     setBusy(true);
     setFlash("");
     try {
-      await action();
+      const warning = await action();
       await refreshData(session.user.id);
-      setFlash(successText);
+      setFlash(warning || successText);
     } catch (error) {
       setFlash("সংরক্ষণ হয়নি: " + (error.message || "আবার চেষ্টা করুন"));
     } finally {
@@ -273,9 +273,11 @@ export default function Home() {
       if (supplierPhoto) {
         const path = session.user.id + "/suppliers/" + saved.id + "-" + supplierPhoto.name.replace(/[^a-zA-Z0-9._-]/g, "_");
         const upload = await supabase.storage.from("joy-shoes-files").upload(path, supplierPhoto, { upsert: true });
-        if (upload.error) throw upload.error;
-        const update = await supabase.from("suppliers").update({ photo_path: path }).eq("id", saved.id).eq("owner_id", session.user.id);
-        if (update.error) throw update.error;
+        if (!upload.error) {
+          await supabase.from("suppliers").update({ photo_path: path }).eq("id", saved.id).eq("owner_id", session.user.id);
+        } else {
+          return "মহাজন যোগ হয়েছে, তবে ছবিটি আপলোড হয়নি: " + upload.error.message;
+        }
       }
       await writeAudit("suppliers", saved.id, "insert", supplierForm);
       setSupplierForm({ owner_name: "", shop_name: "", phone: "", address: "", location_text: "", opening_balance: "0", notes: "" });
@@ -303,11 +305,13 @@ export default function Home() {
       if (memoFile) {
         const path = session.user.id + "/purchase-memos/" + purchaseId + "-" + memoFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
         const upload = await supabase.storage.from("joy-shoes-files").upload(path, memoFile, { upsert: true });
-        if (upload.error) throw upload.error;
-        const memo = await supabase.from("cash_memos").insert({
-          owner_id: session.user.id, purchase_id: purchaseId, storage_path: path, original_file_name: memoFile.name
-        });
-        if (memo.error) throw memo.error;
+        if (!upload.error) {
+          await supabase.from("cash_memos").insert({
+            owner_id: session.user.id, purchase_id: purchaseId, storage_path: path, original_file_name: memoFile.name
+          });
+        } else {
+          return "ক্রয় সংরক্ষণ হয়েছে, তবে ক্যাশ মেমো আপলোড হয়নি: " + upload.error.message;
+        }
       }
       setPurchaseForm({ supplier_id: "", purchase_date: todayBD(), invoice_number: "", amount_paid: "0", payment_method: "cash", reference_note: "", notes: "" });
       setPurchaseLines([freshLine()]);
@@ -558,7 +562,7 @@ export default function Home() {
           <Field label="বাজার / লোকেশন" value={supplierForm.location_text} onChange={(v) => setSupplierForm({ ...supplierForm, location_text: v })} />
           <Field label="শুরুর বাকি (থাকলে)" type="number" min="0" step="0.01" value={supplierForm.opening_balance} onChange={(v) => setSupplierForm({ ...supplierForm, opening_balance: v })} />
           <TextArea label="নোট" value={supplierForm.notes} onChange={(v) => setSupplierForm({ ...supplierForm, notes: v })} />
-          <Field label="মহাজনের ছবি (ইচ্ছা হলে)" type="file" value={undefined} onChange={() => {}} />
+          <label className="field-wrap"><span>মহাজনের ছবি (ইচ্ছা হলে)</span></label>
           <input className="file-control" type="file" accept="image/*" onChange={(e) => setSupplierPhoto(e.target.files?.[0] || null)} />
           <button className="primary-btn full-btn" disabled={busy}>মহাজন সংরক্ষণ করুন</button>
         </form>
