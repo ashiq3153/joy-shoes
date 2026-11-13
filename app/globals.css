@@ -1614,3 +1614,92 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}
 .dk-auth-compact .dk-auth-switch button{text-align:center}
 @media(max-width:900px){.dk-auth-compact{justify-content:center;padding:18px 16px calc(22px + env(safe-area-inset-bottom))}.dk-auth-compact .dk-auth-card{max-width:100%;padding:23px 21px;border-radius:22px}.dk-auth-brand{margin-bottom:16px;font-size:19px}.dk-auth-compact .dk-auth-card h2{font-size:22px}.dk-auth-compact .dk-auth-intro{margin-bottom:19px;font-size:13px}.dk-forgot-link{font-size:13px}}
 @media(max-width:380px){.dk-auth-compact{padding-right:12px;padding-left:12px}.dk-auth-compact .dk-auth-card{padding:19px 17px}.dk-auth-compact .dk-auth-card h2{font-size:20px}}
+
+
+/* Dashboard reference pass: balanced mobile cards, compact modules, and cover-led shop identity */
+.dk-header-profile{margin-left:auto}
+.dk-add-shop-card{
+  display:flex;align-items:center;gap:13px;width:100%;min-height:76px;margin:0 0 17px;padding:13px 16px;
+  border:1px solid #d7eadf;border-radius:17px;color:#17482f;background:linear-gradient(110deg,#f0faf3,#ffffff);
+  text-align:left;box-shadow:0 5px 16px rgba(15,74,42,.06);cursor:pointer
+}
+.dk-add-shop-card>span{display:grid;place-items:center;flex:none;width:43px;height:43px;border-radius:14px;color:#fff;background:linear-gradient(135deg,#0a9a59,#087348);font-size:27px;font-weight:600}
+.dk-add-shop-card>div{display:flex;flex:1;flex-direction:column;gap:4px;min-width:0}
+.dk-add-shop-card b{font-size:14px;font-weight:900}
+.dk-add-shop-card small{color:#6e8577;font-size:11px;line-height:1.5}
+.dk-add-shop-card>i{color:#07804d;font-size:20px;font-style:normal}
+.dk-header-brand b{font-size:18px;letter-spacing:0}
+.dk-section-heading small{font-size:10px;letter-spacing:0}
+@media(max-width:760px){
+  .dk-app-header{min-height:64px;padding:0 13px;gap:10px}
+  .dk-header-brand{gap:7px;font-size:18px}
+  .dk-header-brand b{font-size:18px;white-space:nowrap}
+  .dk-header-profile{display:flex;align-items:center;gap:8px;margin-left:auto}
+  .dk-header-status-dot{flex:none}
+  .dk-avatar-button{width:42px;height:42px;margin:0;flex:none}
+  .dk-main-layout{padding:12px 12px 20px}
+  .dk-main-area{padding:0 0 10px}
+  .dk-shop-banner{
+    display:flex;align-items:flex-end;min-height:184px;margin-bottom:14px;padding:16px;
+    border-radius:22px;background-position:center;background-size:cover
+  }
+  .dk-shop-brand{
+    position:absolute;left:16px;bottom:19px;width:68px;height:68px;border-width:3px;
+    font-size:30px;box-shadow:0 4px 14px rgba(0,0,0,.16)
+  }
+  .dk-shop-banner-copy{width:100%;min-width:0;align-self:flex-end;padding:0 38px 7px 82px}
+  .dk-shop-banner-copy small{display:block;margin-bottom:3px;color:#d8f4e3;font-size:11px;font-weight:850}
+  .dk-shop-banner-copy h1{margin:0 0 5px;font-size:clamp(19px,5.3vw,23px);line-height:1.3;font-weight:950}
+  .dk-shop-banner-copy p{display:block;max-width:100%;margin:0;color:#effaf2;font-size:11px;line-height:1.45;overflow-wrap:anywhere}
+  .dk-shop-category-tag{display:inline-flex;margin-top:8px;padding:6px 9px;border:1px solid rgba(255,255,255,.26);border-radius:999px;color:#fff;background:rgba(255,255,255,.14);font-size:9px;font-weight:850}
+  .dk-banner-edit{right:12px;bottom:15px;width:34px;height:34px;font-size:16px}
+  .dk-shop-switcher{margin:0 0 12px;padding:8px 10px}
+  .dk-date-line{display:flex;align-items:center;gap:10px;margin:13px 2px 12px;font-size:13px}
+  .dk-date-line>span{display:grid;place-items:center;width:39px;height:39px;flex:none;border-radius:13px;color:#087c4a;background:#e5f5eb;font-size:20px}
+  .dk-date-line>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .dk-date-line small{color:#84968b;font-size:10px}
+  .dk-date-line b{color:#294b38;font-size:13px;line-height:1.45}
+  .dk-stats-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:11px 0 13px}
+  .dk-stat-card{min-width:0;min-height:101px;padding:10px 9px;border-radius:15px;gap:6px}
+  .dk-stat-card span{font-size:clamp(9px,2.6vw,11px);line-height:1.35}
+  .dk-stat-card b{font-size:clamp(14px,4.3vw,18px);line-height:1.25;overflow-wrap:anywhere}
+  .dk-stat-card small{font-size:clamp(8px,2.15vw,9px);line-height:1.35}
+  .dk-stat-top i{width:27px;height:27px;flex:none;border-radius:10px;font-size:15px}
+  .dk-quick-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0 19px}
+  .dk-quick-actions button{min-width:0;min-height:66px;padding:9px 7px;gap:8px;border-radius:16px;font-size:clamp(11px,3.1vw,14px)}
+  .dk-quick-actions button span{width:33px;height:33px;flex:none;font-size:24px}
+  .dk-section-heading{align-items:center;margin-bottom:10px}
+  .dk-section-heading small{font-size:10px;letter-spacing:0}
+  .dk-section-heading h2{font-size:20px;line-height:1.4}
+  .dk-section-heading>span,.dk-section-heading>b{font-size:10px;white-space:nowrap}
+  .dk-module-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:17px}
+  .dk-module-card{display:flex;align-items:center;justify-content:flex-start;min-width:0;min-height:108px;padding:10px 5px;gap:7px;border-radius:15px;text-align:center}
+  .dk-module-icon{width:39px;height:39px;flex:none;border-radius:13px;font-size:22px}
+  .dk-module-card b{width:100%;font-size:clamp(9px,2.7vw,11px);line-height:1.4;text-align:center;overflow-wrap:anywhere}
+  .dk-module-card small,.dk-module-card>i{display:none}
+  .dk-recent-panel,.dk-panel{padding:15px;border-radius:17px}
+  .dk-recent-panel{margin-top:10px}
+  .dk-subscription-strip{margin-top:14px}
+  .dk-footer{padding:16px 0 7px;font-size:10px;text-align:center}
+}
+@media(max-width:380px){
+  .dk-app-header{padding-inline:10px;gap:8px}
+  .dk-header-brand{gap:5px}
+  .dk-header-brand b{font-size:16px}
+  .dk-header-brand-icon{font-size:21px}
+  .dk-avatar-button{width:39px;height:39px}
+  .dk-main-layout{padding-inline:9px}
+  .dk-shop-banner{min-height:174px;padding:13px}
+  .dk-shop-brand{left:13px;bottom:17px;width:62px;height:62px}
+  .dk-shop-banner-copy{padding-left:75px;padding-right:34px}
+  .dk-shop-banner-copy h1{font-size:19px}
+  .dk-shop-banner-copy p{font-size:10px}
+  .dk-stat-card{min-height:98px;padding:9px 7px}
+  .dk-stat-card span{font-size:9px}
+  .dk-stat-card b{font-size:14px}
+  .dk-stat-card small{font-size:8px}
+  .dk-module-grid{gap:6px}
+  .dk-module-card{min-height:101px;padding:8px 3px}
+  .dk-module-icon{width:35px;height:35px;font-size:20px}
+  .dk-module-card b{font-size:9px}
+}
