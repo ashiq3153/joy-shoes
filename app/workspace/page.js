@@ -230,7 +230,7 @@ export default function Home() {
         const { error: ownerError } = await supabase.from("owners").upsert({ id: session.user.id }, { onConflict: "id" });
         if (ownerError) throw ownerError;
         const { data: ownShop, error: shopError } = await supabase
-          .from("shops").select("*").eq("owner_id", session.user.id).maybeSingle();
+          .from("shops").select("*").eq("owner_id", session.user.id).order("created_at", { ascending: true }).limit(1).maybeSingle();
         if (shopError) throw shopError;
         if (alive) {
           setShop(ownShop || null);
