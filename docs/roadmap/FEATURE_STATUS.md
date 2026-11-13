@@ -2,6 +2,8 @@
 
 Status meanings: LIVE FOUNDATION = code/database exists; PARTIAL = usable slice only; PLANNED = not implemented.
 
+**Verification note — 13 November 2026:** Production homepage and `/admin` placeholder were browser-checked. The shop creation RPC was exercised with a test account and created the shop, owner membership and trial together; the test shop was deleted afterwards. Cross-user RLS read checks for `shop_sales`, `shop_expenses`, `products` and `shops` returned zero rows for the unrelated account. This is a focused smoke test, not a complete penetration test or a complete multi-tenant certification.
+
 | Feature | Status | Notes |
 |---|---|---|
 | DokanKhata branding and root experience | LIVE FOUNDATION | Root route now loads modular app |
