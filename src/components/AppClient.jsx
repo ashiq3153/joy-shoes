@@ -8,11 +8,13 @@ import DashboardShell from "./dashboard/DashboardShell";
 import DashboardHome from "./dashboard/DashboardHome";
 import {SalesPage,ExpensesPage} from "./modules/TransactionPages";
 import ProductsPage from "./modules/ProductsPage";
+import SuppliersPage from "./modules/SuppliersPage";
+import EmployeesPage from "./modules/EmployeesPage";
 import ShopProfilePage from "./profile/ShopProfilePage";
 import SubscriptionPage from "./subscription/SubscriptionPage";
 import {safeImageFile} from "../lib/dokankhata/format";
 
-const EMPTY={sales:[],expenses:[],products:[],subscription:null,payments:[]};
+const EMPTY={sales:[],expenses:[],products:[],suppliers:[],supplierLedger:[],employees:[],subscription:null,payments:[]};
 
 export default function AppClient(){
  const supabase=useMemo(()=>createClient(),[]);
@@ -69,17 +71,20 @@ export default function AppClient(){
   if(!shopId){setData(EMPTY);return;}
   setData(EMPTY);setLoading(true);
   try{
-   const [sales,expenses,products,subs,payments]=await Promise.all([
+   const [sales,expenses,products,subs,payments,suppliers,supplierLedger,employees]=await Promise.all([
     supabase.from("shop_sales").select("*").eq("shop_id",shopId).order("sold_at",{ascending:false}).limit(200),
     supabase.from("shop_expenses").select("*").eq("shop_id",shopId).order("expense_date",{ascending:false}).limit(200),
     supabase.from("products").select("*").eq("shop_id",shopId).eq("is_active",true).order("product_name").limit(500),
     supabase.from("subscriptions").select("*").eq("shop_id",shopId).maybeSingle(),
-    supabase.from("subscription_payments").select("*").eq("shop_id",shopId).order("submitted_at",{ascending:false}).limit(50)
+    supabase.from("subscription_payments").select("*").eq("shop_id",shopId).order("submitted_at",{ascending:false}).limit(50),
+    supabase.from("suppliers").select("*").eq("shop_id",shopId).order("created_at",{ascending:false}),
+    supabase.from("supplier_ledger_view").select("*").eq("shop_id",shopId).order("owner_name"),
+    supabase.from("employees").select("*").eq("shop_id",shopId).order("created_at",{ascending:false})
    ]);
-   const failed=[sales,expenses,products,subs,payments].find(r=>r.error);
+   const failed=[sales,expenses,products,subs,payments,suppliers,supplierLedger,employees].find(r=>r.error);
    if(failed)throw failed.error;
    if(requestId!==requestSequence.current)return;
-   setData({sales:sales.data||[],expenses:expenses.data||[],products:products.data||[],subscription:subs.data||null,payments:payments.data||[]});
+   setData({sales:sales.data||[],expenses:expenses.data||[],products:products.data||[],suppliers:suppliers.data||[],supplierLedger:supplierLedger.data||[],employees:employees.data||[],subscription:subs.data||null,payments:payments.data||[]});
   }catch(error){
    if(requestId===requestSequence.current)setFlash("দোকানের তথ্য রিফ্রেশ হয়নি: "+(error.message||"আবার চেষ্টা করুন"));
   }finally{
@@ -192,6 +197,30 @@ export default function AppClient(){
   finally{setBusy(false);}
  }
 
+ async function saveSupplier(payload,reset){
+  setBusy(true);setFlash("");
+  try{
+   const {error}=await supabase.from("suppliers").insert({
+    ...payload,shop_id:activeShop.id,owner_id:session.user.id
+   });
+   if(error)throw error;
+   reset();await refreshShopData(activeShop.id);setFlash("মহাজনের তথ্য সংরক্ষণ হয়েছে।");
+  }catch(error){setFlash("মহাজন যোগ হয়নি: "+error.message);}
+  finally{setBusy(false);}
+ }
+
+ async function saveEmployee(payload,reset){
+  setBusy(true);setFlash("");
+  try{
+   const {error}=await supabase.from("employees").insert({
+    ...payload,shop_id:activeShop.id,owner_id:session.user.id,is_active:true
+   });
+   if(error)throw error;
+   reset();await refreshShopData(activeShop.id);setFlash("কর্মচারীর তথ্য সংরক্ষণ হয়েছে।");
+  }catch(error){setFlash("কর্মচারী যোগ হয়নি: "+error.message);}
+  finally{setBusy(false);}
+ }
+
  async function saveProduct(payload,reset){
   setBusy(true);setFlash("");
   try{
@@ -236,6 +265,8 @@ export default function AppClient(){
  else if(view==="sales")content=<SalesPage shop={activeShop} rows={data.sales} onSave={saveSale} busy={busy} onBack={()=>setView("home")}/>;
  else if(view==="expenses")content=<ExpensesPage shop={activeShop} rows={data.expenses} onSave={saveExpense} busy={busy} onBack={()=>setView("home")}/>;
  else if(view==="products")content=<ProductsPage shop={activeShop} rows={data.products} onSave={saveProduct} busy={busy} onBack={()=>setView("home")}/>;
+ else if(view==="suppliers")content=<SuppliersPage shop={activeShop} rows={data.suppliers} ledger={data.supplierLedger} onSave={saveSupplier} busy={busy} onBack={()=>setView("home")}/>;
+ else if(view==="employees")content=<EmployeesPage shop={activeShop} rows={data.employees} onSave={saveEmployee} busy={busy} onBack={()=>setView("home")}/>;
  else if(view==="profile")content=<ShopProfilePage shop={activeShop} profile={profile} onSaveShop={saveShop} onSaveProfile={saveOwnerProfile} busy={busy} onBack={()=>setView("home")}/>;
  else if(view==="subscription")content=<SubscriptionPage shop={activeShop} subscription={data.subscription} payments={data.payments} onSubmitPayment={submitPayment} busy={busy} onBack={()=>setView("home")}/>;
  else if(view==="reports")content=<section className="dk-module-page"><div className="dk-page-title"><button onClick={()=>setView("home")}>←</button><div><small>SHOP REPORT</small><h1>দোকানের রিপোর্ট</h1><p>বর্তমান দোকানের নতুন হিসাব থেকে রিপোর্ট</p></div></div><div className="dk-panel"><h2>সারাংশ</h2><div className="dk-report-lines"><p>মোট বিক্রি <b>{data.sales.reduce((n,x)=>n+Number(x.amount||0),0).toLocaleString("bn-BD")} টাকা</b></p><p>মোট খরচ <b>{data.expenses.reduce((n,x)=>n+Number(x.amount||0),0).toLocaleString("bn-BD")} টাকা</b></p><p>পণ্য <b>{data.products.length} টি</b></p></div><small className="dk-muted">এটি নতুন দোকানভিত্তিক এন্ট্রির সারাংশ। পুরোনো হিসাবের সম্পূর্ণ মাইগ্রেশন এখনো বাকি।</small></div></section>;
