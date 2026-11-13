@@ -18,6 +18,8 @@ This file is the handoff contract for ChatGPT, other AI agents and future develo
 5. docs/technical/TRD.md — stack, folders and engineering conventions.
 6. docs/roadmap/FEATURE_STATUS.md — what is live vs planned.
 7. supabase/migrations — database change history.
+8. docs/architecture/ADR-001-SHOP-TENANCY.md — tenant design decision.
+9. docs/testing/TEST_PLAN.md — repeatable functional and RLS tests.
 
 ## Non-negotiable safety rules
 - Never delete or rename legacy tables or rows as a shortcut.
@@ -54,6 +56,7 @@ This file is the handoff contract for ChatGPT, other AI agents and future develo
 - Manual payment destination details are not configured. The customer-facing payment submit form is intentionally disabled; do not collect TxIDs or accept money until official receiver instructions and admin review are available.
 - Shop creation uses the SECURITY INVOKER RPC `create_shop_with_trial`, which atomically writes the shop, owner membership and 7-day trial under RLS.
 - The active-shop data loader uses a request sequence guard to prevent slow responses from a previously selected shop replacing the current shop's data.
+- Focused smoke tests verified cross-user read isolation for shops, shop_sales, shop_expenses and products, and rejected a cross-owner shop_sales insert. This does not certify the legacy owner-scoped tables or manager/staff permission model.
 
 ## Repository
 - Source: https://github.com/ashiq3153/joy-shoes
