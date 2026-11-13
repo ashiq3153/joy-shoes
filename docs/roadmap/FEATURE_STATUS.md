@@ -14,9 +14,9 @@ Status meanings: LIVE FOUNDATION = code/database exists; PARTIAL = usable slice 
 | Product catalog and search | LIVE FOUNDATION | Per-shop product table |
 | Multiple sale entries per day | LIVE FOUNDATION | shop_sales |
 | Quick expense categories | LIVE FOUNDATION | shop_expenses |
-| Seven-day trial | LIVE FOUNDATION | One subscription row per shop |
-| ৳২০০ / shop / month plan | LIVE FOUNDATION | Plan and payment-request schema |
-| Manual bKash / Nagad request | PARTIAL | Customer can submit; admin verification is not ready |
+| Seven-day trial | LIVE FOUNDATION | One trial row per shop created atomically with shop; automatic expiry enforcement still pending |
+| ৳২০০ / shop / month plan | LIVE FOUNDATION | Price and per-shop billing schema; renewal and paid access enforcement pending |
+| Manual bKash / Nagad request | PARTIAL / HELD | Payment schema and ownership policy exist; submit UI is disabled until official receiver details and admin verification are available |
 | Dashboard current-shop sales / expense stats | LIVE FOUNDATION | Uses new shop-scoped tables only |
 | Suppliers / supplier ledger | PLANNED for tenancy migration | Existing screen preserved under /workspace |
 | Purchases / purchase returns | PLANNED for tenancy migration | Old RPCs currently use owner_id |
