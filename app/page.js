@@ -6,7 +6,7 @@ import { createClient } from "../lib/supabase/client";
 const PAYMENT_METHODS = [
   ["cash", "নগদ"],
   ["bkash", "বিকাশ"],
-  ["nagad", "নগদ"],
+  ["nagad", "নগদ (Nagad)"],
   ["rocket", "রকেট"],
   ["bank", "ব্যাংক"],
   ["other", "অন্যান্য"]
@@ -221,8 +221,13 @@ export default function Home() {
     setFlash("");
     try {
       const warning = await action();
-      await refreshData(session.user.id);
-      setFlash(warning || successText);
+      let refreshWarning = "";
+      try {
+        await refreshData(session.user.id);
+      } catch (refreshError) {
+        refreshWarning = "হিসাব সংরক্ষণ হয়েছে, তবে তালিকা রিফ্রেশ হয়নি। পেজ রিলোড করুন।";
+      }
+      setFlash(warning || refreshWarning || successText);
     } catch (error) {
       setFlash("সংরক্ষণ হয়নি: " + (error.message || "আবার চেষ্টা করুন"));
     } finally {
@@ -266,6 +271,7 @@ export default function Home() {
   async function saveSupplier(event) {
     event.preventDefault();
     await runSave(async () => {
+      let photoWarning = "";
       const { data: saved, error } = await supabase.from("suppliers").insert({
         owner_id: session.user.id, ...supplierForm, opening_balance: Number(supplierForm.opening_balance || 0)
       }).select("id").single();
@@ -276,12 +282,13 @@ export default function Home() {
         if (!upload.error) {
           await supabase.from("suppliers").update({ photo_path: path }).eq("id", saved.id).eq("owner_id", session.user.id);
         } else {
-          return "মহাজন যোগ হয়েছে, তবে ছবিটি আপলোড হয়নি: " + upload.error.message;
+          photoWarning = "মহাজন যোগ হয়েছে, তবে ছবিটি আপলোড হয়নি: " + upload.error.message;
         }
       }
       await writeAudit("suppliers", saved.id, "insert", supplierForm);
       setSupplierForm({ owner_name: "", shop_name: "", phone: "", address: "", location_text: "", opening_balance: "0", notes: "" });
       setSupplierPhoto(null);
+      return photoWarning;
     }, "✅ মহাজনের তথ্য সংরক্ষণ হয়েছে।");
   }
 
@@ -295,6 +302,7 @@ export default function Home() {
     const total = items.reduce((s, line) => s + line.quantity_pairs * line.unit_cost, 0);
     if (amount < 0 || amount > total) return notify("পরিশোধের টাকা মোট ক্রয়ের চেয়ে বেশি হতে পারবে না।");
     await runSave(async () => {
+      let memoWarning = "";
       const { data: purchaseId, error } = await supabase.rpc("create_purchase_with_items", {
         p_supplier_id: purchaseForm.supplier_id, p_purchase_date: purchaseForm.purchase_date,
         p_invoice_number: purchaseForm.invoice_number, p_notes: purchaseForm.notes,
@@ -310,12 +318,13 @@ export default function Home() {
             owner_id: session.user.id, purchase_id: purchaseId, storage_path: path, original_file_name: memoFile.name
           });
         } else {
-          return "ক্রয় সংরক্ষণ হয়েছে, তবে ক্যাশ মেমো আপলোড হয়নি: " + upload.error.message;
+          memoWarning = "ক্রয় সংরক্ষণ হয়েছে, তবে ক্যাশ মেমো আপলোড হয়নি: " + upload.error.message;
         }
       }
       setPurchaseForm({ supplier_id: "", purchase_date: todayBD(), invoice_number: "", amount_paid: "0", payment_method: "cash", reference_note: "", notes: "" });
       setPurchaseLines([freshLine()]);
       setMemoFile(null);
+      return memoWarning;
     }, "✅ নতুন মাল কেনার হিসাব সংরক্ষণ হয়েছে।");
   }
 
@@ -685,7 +694,7 @@ export default function Home() {
         <Field label="তারিখ" type="date" value={closingForm.closing_date} onChange={(v) => setClosingForm({ ...closingForm, closing_date: v })} />
         <div className="form-section-title">টাকা আসার হিসাব</div>
         <Field label="দিনের শুরুতে হাতে নগদ" type="number" min="0" step="0.01" value={closingForm.opening_cash} onChange={(v) => setClosingForm({ ...closingForm, opening_cash: v })} />
-        <Field label="নগদ বিক্রি" type="number" min="0" step="0.01" value={closingForm.cash_sales} onChange={(v) => setClosingForm({ ...closingForm, cash_sales: v })} />
+        <Field label="নগদ বিক্রি (কর্মচারীর টাকা বাদে)" type="number" min="0" step="0.01" value={closingForm.cash_sales} onChange={(v) => setClosingForm({ ...closingForm, cash_sales: v })} />
         <Field label="অন্যান্য নগদ জমা" type="number" min="0" step="0.01" value={closingForm.other_cash_receipts} onChange={(v) => setClosingForm({ ...closingForm, other_cash_receipts: v })} />
         <Field label="কর্মচারীর কাছ থেকে নগদ পেয়েছেন" type="number" min="0" step="0.01" value={closingForm.employee_collections} onChange={(v) => setClosingForm({ ...closingForm, employee_collections: v })} />
         <div className="form-section-title">টাকা বের হওয়ার হিসাব</div>
