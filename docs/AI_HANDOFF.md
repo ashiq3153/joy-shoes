@@ -51,7 +51,9 @@ This file is the handoff contract for ChatGPT, other AI agents and future develo
 - The /admin path is only a placeholder; no admin privileges or actions are exposed there.
 - Phone is stored as a profile field; it is not OTP-verified.
 - Google OAuth is not enabled until credentials and redirect URLs are configured.
-- Manual payment requests are stored; an admin verification interface is still pending.
+- Manual payment destination details are not configured. The customer-facing payment submit form is intentionally disabled; do not collect TxIDs or accept money until official receiver instructions and admin review are available.
+- Shop creation uses the SECURITY INVOKER RPC `create_shop_with_trial`, which atomically writes the shop, owner membership and 7-day trial under RLS.
+- The active-shop data loader uses a request sequence guard to prevent slow responses from a previously selected shop replacing the current shop's data.
 
 ## Repository
 - Source: https://github.com/ashiq3153/joy-shoes
