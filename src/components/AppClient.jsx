@@ -279,7 +279,7 @@ export default function AppClient(){
 
  let content;
  if(view==="home")content=<DashboardHome shop={activeShop} profile={profile} sales={data.sales} expenses={data.expenses} products={data.products} subscription={data.subscription} payments={data.payments} onNavigate={navigate} onNewShop={()=>setView("new-shop")} onSwitchShop={setActiveShopId} shops={shops} activeShopId={activeShopId}/>;
- else if(view==="sales")content=<SalesPage shop={activeShop} rows={data.sales} onSave={saveSale} busy={busy} onBack={()=>setView("home")}/>;
+ else if(view==="sales")content=<SalesPage shop={activeShop} rows={data.sales} employees={data.employees} onSave={saveSale} busy={busy} onBack={()=>setView("home")}/>;
  else if(view==="expenses")content=<ExpensesPage shop={activeShop} rows={data.expenses} onSave={saveExpense} busy={busy} onBack={()=>setView("home")}/>;
  else if(view==="products")content=<ProductsPage shop={activeShop} rows={data.products} onSave={saveProduct} busy={busy} onBack={()=>setView("home")}/>;
  else if(view==="suppliers")content=<SuppliersPage shop={activeShop} rows={data.suppliers} ledger={data.supplierLedger} onSave={saveSupplier} busy={busy} onBack={()=>setView("home")}/>;
