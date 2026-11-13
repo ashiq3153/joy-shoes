@@ -240,7 +240,7 @@ export default function Home() {
           });
         }
         if (alive && ownShop) await loadProducts(ownShop.id);
-        if (alive) await refreshData(session.user.id, ownShop.id);
+        if (alive && ownShop) await refreshData(session.user.id, ownShop.id);
       } catch (error) {
         if (alive) setFlash("দোকান বা ডেটা লোড হয়নি: " + (error.message || "আবার চেষ্টা করুন"));
       } finally {
