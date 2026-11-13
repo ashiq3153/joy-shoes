@@ -1099,3 +1099,166 @@ button,input,select,textarea{font-family:inherit}button{-webkit-tap-highlight-co
     height: 30% !important;
   }
 }
+
+
+/* Responsive QA pass — shared layout guards for every DokanKhata screen */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+.dk-app-shell,.dk-main-layout,.dk-main-area,.dk-dashboard-content,.dk-module-page,
+.dk-panel,.dk-profile-panel,.dk-transaction-page,.dk-setup-page,.dk-setup-card,
+.dk-auth-flow,.dk-auth-card{min-width:0;max-width:100%}
+.dk-main-area{width:100%}
+.dk-page-title>div{min-width:0}
+.dk-page-title h1,.dk-page-title p,.dk-shop-banner-copy h1,.dk-shop-banner-copy p{
+  overflow-wrap:anywhere;word-break:normal
+}
+.dk-panel,.dk-stat-card,.dk-module-card,.dk-shop-banner,.dk-subscription-strip{
+  min-width:0
+}
+.dk-field input,.dk-field select,.dk-field textarea{width:100%;min-width:0;max-width:100%}
+.dk-number-pad button,.dk-expense-category-list button{min-width:0}
+.dk-bottom-nav{z-index:50}
+.dk-mobile-menu-layer{position:fixed;inset:68px 0 0;z-index:80}
+.dk-mobile-menu-backdrop{position:absolute;inset:0}
+.dk-mobile-menu{position:absolute;top:0;bottom:0;left:0;overflow-y:auto;overscroll-behavior:contain}
+.dk-mobile-menu>button{width:100%;text-align:left}
+.dk-app-header{position:sticky;top:0;z-index:55}
+.dk-profile-hero,.dk-profile-panel{min-width:0}
+.dk-profile-identity-copy{min-width:0;overflow-wrap:anywhere}
+.dk-profile-identity-copy>b{overflow-wrap:anywhere}
+.dk-setup-card,.dk-auth-card{overflow:hidden}
+.dk-setup-card .dk-field,.dk-auth-card .dk-field{min-width:0}
+.dk-setup-next,.dk-setup-form .dk-primary-button,.dk-auth-submit{width:100%}
+.dk-category-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.dk-category-card{min-width:0;overflow-wrap:anywhere}
+.dk-category-card small{overflow-wrap:anywhere}
+.dk-sale-form-extra{min-width:0}
+.dk-subscription-strip>div{min-width:0}
+.dk-subscription-strip small{overflow-wrap:anywhere}
+
+@media(max-width:760px){
+  .dk-app-shell{min-height:100svh;padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+  .dk-app-header{position:sticky;top:0;min-height:64px;padding-inline:12px}
+  .dk-main-layout{display:block;width:100%;padding:13px 12px 22px}
+  .dk-main-area{width:100%;max-width:none;padding:0 0 12px}
+  .dk-dashboard-content,.dk-module-page{width:100%;max-width:none}
+  .dk-mobile-welcome{gap:8px;min-width:0}
+  .dk-mobile-welcome>div{min-width:0}
+  .dk-mobile-welcome span{display:block;overflow-wrap:anywhere}
+  .dk-mobile-welcome>button{flex:none;max-width:44%;white-space:normal}
+  .dk-shop-banner{display:grid;grid-template-columns:64px minmax(0,1fr) 38px;align-items:center;gap:11px;min-height:132px;padding:15px;border-radius:20px}
+  .dk-shop-brand{width:62px;height:62px;border-width:3px;font-size:28px}
+  .dk-shop-banner-copy{min-width:0}
+  .dk-shop-banner-copy h1{font-size:clamp(18px,5vw,24px);line-height:1.3}
+  .dk-shop-banner-copy p{font-size:11px;line-height:1.45}
+  .dk-shop-category-tag{font-size:9px}
+  .dk-banner-edit{width:36px;height:36px}
+  .dk-date-line{gap:9px;margin:14px 2px}
+  .dk-date-line>span{width:36px;height:36px;font-size:19px}
+  .dk-date-line b{font-size:12px;line-height:1.5}
+  .dk-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
+  .dk-stat-card{min-height:98px;padding:11px 10px}
+  .dk-stat-card b{font-size:clamp(16px,4.5vw,21px)}
+  .dk-quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:13px 0 22px}
+  .dk-quick-actions button{min-width:0;min-height:62px;padding:10px 8px;gap:7px;font-size:clamp(11px,3vw,14px)}
+  .dk-quick-actions button span{width:29px;height:29px;font-size:22px}
+  .dk-module-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .dk-module-card{min-height:120px;padding:12px;gap:7px}
+  .dk-module-card b{font-size:13px;line-height:1.45}
+  .dk-module-card small{font-size:10px}
+  .dk-module-icon{width:43px;height:43px;font-size:24px}
+  .dk-recent-panel,.dk-panel{padding:15px;border-radius:18px}
+  .dk-subscription-strip{grid-template-columns:minmax(0,1fr) auto;gap:9px;padding:13px}
+  .dk-subscription-intro{gap:9px}
+  .dk-subscription-strip>div:first-child>span{width:38px;height:38px;font-size:21px}
+  .dk-subscription-price b{font-size:21px}
+  .dk-subscription-strip>button{grid-column:1/-1;width:100%}
+  .dk-page-title{align-items:flex-start;gap:10px;margin-bottom:14px}
+  .dk-page-title>button:first-child{width:40px;height:40px;flex:none}
+  .dk-page-title h1{font-size:21px;line-height:1.4}
+  .dk-page-title p{font-size:11px}
+  .dk-amount-panel,.dk-expense-panel{padding:14px}
+  .dk-amount-input{min-height:64px;padding-inline:12px}
+  .dk-amount-input input{min-height:56px;font-size:25px}
+  .dk-number-pad{gap:7px;margin:11px 0 15px}
+  .dk-number-pad button{min-height:46px}
+  .dk-expense-category-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .dk-expense-category-list button{min-height:58px;padding:8px;gap:7px}
+  .dk-expense-category-list button span{width:32px;height:32px;font-size:19px}
+  .dk-expense-category-list button b{font-size:11px}
+  .dk-sale-form-extra{grid-template-columns:minmax(0,1fr)}
+  .dk-sale-form-extra .dk-field{grid-column:1/-1}
+  .dk-search-box{width:100%;min-width:0}
+  .dk-search-box input{min-width:0;width:100%}
+  .dk-profile-cover{min-height:140px}
+  .dk-profile-identity{gap:10px;padding-inline:13px}
+  .dk-profile-logo{width:70px;height:70px}
+  .dk-profile-identity-copy>b{font-size:16px}
+  .dk-profile-panel{padding:15px}
+  .dk-setup-page{min-height:100svh;padding:13px 12px calc(22px + env(safe-area-inset-bottom))}
+  .dk-setup-top{margin-bottom:14px}
+  .dk-setup-card{padding:18px;border-radius:20px}
+  .dk-setup-card h1{font-size:22px;line-height:1.4}
+  .dk-category-grid{gap:9px;margin:17px 0}
+  .dk-category-card{min-height:116px;padding:11px;border-radius:15px}
+  .dk-category-card>span{width:40px;height:40px;font-size:24px}
+  .dk-category-card b{font-size:12px}
+  .dk-category-card small{font-size:9px;line-height:1.4}
+  .dk-setup-cover-preview{min-height:125px}
+  .dk-bottom-nav{
+    position:fixed;left:0;right:0;bottom:0;width:100%;
+    display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+    padding:7px 6px calc(7px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.97);border-top:1px solid #e4eee6;
+    backdrop-filter:blur(14px);box-shadow:0 -6px 22px rgba(23,63,39,.08)
+  }
+  .dk-bottom-nav button{min-width:0;min-height:51px;padding:4px 2px;gap:3px}
+  .dk-bottom-nav button span{font-size:22px;line-height:1.1}
+  .dk-bottom-nav button small{font-size:9px;white-space:nowrap}
+  .dk-footer{padding:18px 0 8px}
+}
+@media(max-width:380px){
+  .dk-main-layout{padding-inline:9px}
+  .dk-app-header{padding-inline:9px;gap:8px}
+  .dk-header-brand b{font-size:16px}
+  .dk-header-shop-name{max-width:76px;font-size:9px}
+  .dk-shop-banner{grid-template-columns:54px minmax(0,1fr) 34px;padding:12px;gap:8px}
+  .dk-shop-brand{width:52px;height:52px;font-size:24px}
+  .dk-shop-banner-copy h1{font-size:17px}
+  .dk-stat-card{padding:9px 8px}
+  .dk-stat-card span{font-size:9px}
+  .dk-stat-card b{font-size:15px}
+  .dk-quick-actions button{font-size:11px}
+  .dk-module-card{padding:10px;min-height:112px}
+  .dk-module-card b{font-size:12px}
+  .dk-module-card small{font-size:9px}
+  .dk-bottom-nav button small{font-size:8px}
+}
+@media(max-width:900px){
+  .dk-auth-flow{width:100%;min-height:100svh;justify-content:flex-start;padding:12px 12px calc(18px + env(safe-area-inset-bottom))}
+  .dk-auth-visual{min-height:145px;padding:17px 17px 16px;border-radius:19px 19px 0 0}
+  .dk-auth-visual-content{padding-top:8px}
+  .dk-auth-visual h1{font-size:17px;line-height:1.35}
+  .dk-auth-visual p{font-size:10px}
+  .dk-auth-visual-pills{margin-top:7px}
+  .dk-auth-card{padding:18px;margin-top:-2px;border-radius:0 0 19px 19px}
+  .dk-auth-heading-icon{width:42px;height:42px;margin-top:11px;font-size:20px}
+  .dk-auth-card h2{font-size:20px;line-height:1.4}
+  .dk-auth-card>p{margin-bottom:12px;font-size:11px}
+  .dk-auth-form{gap:10px}
+  .dk-input-with-icon{min-height:48px}
+  .dk-input-with-icon input{min-height:44px;font-size:14px}
+  .dk-auth-submit{min-height:49px}
+  .dk-auth-divider{margin:12px 0 9px}
+  .dk-auth-footnote{margin-top:13px;padding:9px;font-size:9px}
+}
+@media(max-height:700px) and (max-width:900px){
+  .dk-auth-flow{padding-top:7px}
+  .dk-auth-visual{min-height:120px;padding-block:12px}
+  .dk-auth-visual-pills{display:none}
+  .dk-auth-card{padding:14px}
+  .dk-auth-heading-icon{display:none}
+  .dk-auth-card h2{margin-top:8px;font-size:18px}
+  .dk-auth-form{gap:8px}
+  .dk-auth-divider{margin:8px 0}
+  .dk-auth-footnote{margin-top:8px}
+}
