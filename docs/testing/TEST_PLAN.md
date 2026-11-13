@@ -24,6 +24,8 @@ Never use real customer money, genuine bKash/Nagad transaction IDs, or real cust
 | SALE-01 | Add multiple sales on one date | Each sale is a separate timestamped shop_sales row | Schema/UI present; full UI test pending |
 | EXP-01 | Add expense | Shop-scoped expense row saved with one of the defined categories | Schema/UI present; full UI test pending |
 | INV-01 | Add/search product | Product belongs only to selected shop | Schema/UI present; full UI test pending |
+| SUP-01 | Add supplier in selected shop | Supplier row stores selected shop_id and appears only in that shop list | PASS — database write smoke test; frontend browser flow pending |
+| EMP-01 | Add employee in selected shop | Employee row stores selected shop_id and appears only in that shop list | PASS — database write smoke test; frontend browser flow pending |
 | BILL-01 | New shop trial | Separate trial row, seven days | PASS — RPC test |
 | BILL-02 | Submit paid renewal | Customer payment form stays disabled until official receiver instructions and secure admin review exist | PASS — payment UI is held |
 | ADMIN-01 | Open /admin | Clearly marked placeholder, not an admin control surface | PASS — browser checked |
@@ -37,12 +39,13 @@ Never use real customer money, genuine bKash/Nagad transaction IDs, or real cust
 | RLS-04 | User B reads User A's products | Zero rows | PASS — SQL smoke test |
 | RLS-05 | User A creates own shop, membership and trial | All three created together | PASS — SQL smoke test |
 | RLS-06 | User B attempts to insert a sale into User A's shop | RLS rejects the insert | PASS — SQL negative test returned 42501 row-level security violation |
+| RLS-08 | User B reads User A's suppliers, employees and supplier ledger | Zero rows | PASS — SQL smoke test; test rows rolled back |
 | RLS-07 | Manager/staff permissions | Only active membership with permitted role can access shop | Pending; invitation/role UI not implemented |
 
 The current tests are focused SQL smoke checks. Run the full matrix again after any policy, schema, RPC, or membership change. Do not claim the entire app is penetration-tested.
 
 ## 4. Regression tests for legacy JOY SHOES
-- Confirm legacy daily_sales, suppliers, expenses and employees counts before and after a migration.
+- Confirm legacy daily_sales, suppliers, expenses and employees counts before and after a migration; suppliers/employees now also require shop_id mapping parity.
 - Confirm legacy sales totals, supplier balances, purchase returns, employee attribution and daily closings match before/after.
 - Confirm a second shop cannot read or mutate any legacy owner-scoped record until the full legacy shop_id migration is complete.
 - Keep /workspace available to the primary legacy shop during the migration.
