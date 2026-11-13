@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "JOY SHOES | ব্যবসার হিসাব",
-  description: "JOY SHOES footwear business management app"
+  title: "DokanKhata | দোকানের ডিজিটাল হিসাবখাতা",
+  description: "সব ধরনের দোকানের বিক্রি, খরচ ও হিসাব ব্যবস্থাপনা"
 };
 
 export default function RootLayout({ children }) {
