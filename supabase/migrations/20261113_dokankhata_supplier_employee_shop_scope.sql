@@ -51,6 +51,8 @@ end $$;
 
 create index if not exists suppliers_shop_id_idx on public.suppliers(shop_id);
 create index if not exists employees_shop_id_idx on public.employees(shop_id);
+create index if not exists suppliers_shop_owner_pair_idx on public.suppliers(shop_id, owner_id);
+create index if not exists employees_shop_owner_pair_idx on public.employees(shop_id, owner_id);
 
 -- Keep existing output columns and their order; append shop_id for shop filtering.
 -- security_invoker ensures the caller's table RLS applies to the view's base tables.
