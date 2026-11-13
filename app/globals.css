@@ -1262,3 +1262,283 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}
   .dk-auth-divider{margin:8px 0}
   .dk-auth-footnote{margin-top:8px}
 }
+
+/* Auth screen polish — mobile spacing, typography, and touch targets */
+@media (max-width: 900px) {
+  .dk-auth-flow {
+    width: 100%;
+    min-height: 100svh;
+    justify-content: flex-start;
+    padding: 14px 16px calc(22px + env(safe-area-inset-bottom));
+  }
+
+  .dk-auth-visual {
+    min-height: 156px;
+    padding: 19px 19px 17px;
+    border-radius: 22px 22px 0 0;
+  }
+
+  .dk-auth-visual-content {
+    padding-top: 7px;
+  }
+
+  .dk-auth-mini-logo {
+    width: 49px;
+    height: 49px;
+    border-radius: 15px;
+  }
+
+  .dk-auth-mini-logo .dk-brand-mark-svg {
+    width: 38px;
+    height: 38px;
+  }
+
+  .dk-auth-visual-content > b {
+    margin: 8px 0 0;
+    font-size: 21px;
+    line-height: 1.35;
+  }
+
+  .dk-auth-visual h1 {
+    margin: 9px 0 5px;
+    font-size: 19px;
+    line-height: 1.42;
+  }
+
+  .dk-auth-visual p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .dk-auth-visual-pills {
+    gap: 7px;
+    margin-top: 11px;
+  }
+
+  .dk-auth-visual-pills span {
+    padding: 7px 10px;
+    font-size: 10px;
+  }
+
+  /* Keep the back control clear of the brand mark. */
+  .dk-auth-back {
+    display: grid;
+    place-items: center;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    z-index: 4;
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    font-size: 23px;
+  }
+
+  .dk-auth-card {
+    max-width: 100%;
+    margin-top: -2px;
+    padding: 21px;
+    border-radius: 0 0 22px 22px;
+  }
+
+  .dk-auth-card-top {
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dk-eyebrow {
+    font-size: 11px;
+    letter-spacing: 1.05px;
+  }
+
+  .dk-auth-step {
+    color: #728579;
+    font-size: 10px;
+    letter-spacing: .65px;
+  }
+
+  .dk-auth-heading-icon {
+    width: 48px;
+    height: 48px;
+    margin-top: 15px;
+    border-radius: 16px;
+    font-size: 23px;
+  }
+
+  .dk-auth-card h2 {
+    margin: 10px 0 6px;
+    font-size: 22px;
+    line-height: 1.45;
+  }
+
+  .dk-auth-card > p {
+    margin: 0 0 15px;
+    color: #687d70;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .dk-auth-form {
+    gap: 13px;
+  }
+
+  .dk-field {
+    gap: 8px;
+    color: #294737;
+    font-size: 14px;
+    font-weight: 850;
+  }
+
+  .dk-input-with-icon {
+    min-height: 56px;
+    gap: 10px;
+    padding: 0 13px;
+    border-radius: 15px;
+  }
+
+  .dk-input-with-icon > i {
+    width: 24px;
+    color: #637c6d;
+    font-size: 19px;
+  }
+
+  .dk-input-with-icon input {
+    min-height: 52px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .dk-input-with-icon input::placeholder {
+    color: #7b8d81;
+    opacity: 1;
+    font-weight: 500;
+  }
+
+  .dk-input-with-icon > button {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    color: #496c58;
+    background: #eaf4ed;
+    font-size: 18px;
+  }
+
+  .dk-auth-submit {
+    min-height: 56px;
+    margin-top: 5px;
+    border-radius: 15px;
+    font-size: 16px;
+  }
+
+  .dk-auth-divider {
+    margin: 17px 0 11px;
+    font-size: 12px;
+  }
+
+  .dk-auth-switch {
+    gap: 6px;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .dk-auth-switch button {
+    min-height: 38px;
+    padding: 4px 0;
+    font-size: 13px;
+  }
+
+  .dk-auth-footnote {
+    flex-wrap: wrap;
+    margin-top: 15px;
+    padding: 12px 10px;
+    font-size: 11px;
+    line-height: 1.55;
+  }
+}
+
+@media (max-width: 380px) {
+  .dk-auth-flow {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .dk-auth-visual {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .dk-auth-card {
+    padding: 18px;
+  }
+
+  .dk-auth-card h2 {
+    font-size: 20px;
+  }
+
+  .dk-auth-visual-pills {
+    gap: 5px;
+  }
+
+  .dk-auth-visual-pills span {
+    padding: 6px 8px;
+    font-size: 9px;
+  }
+}
+
+/* Short screens may scroll naturally; never clip the form or keyboard focus. */
+@media (max-height: 700px) and (max-width: 900px) {
+  .dk-auth-flow {
+    padding-top: 8px;
+    padding-bottom: calc(18px + env(safe-area-inset-bottom));
+  }
+
+  .dk-auth-visual {
+    min-height: 128px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .dk-auth-visual-pills {
+    display: none;
+  }
+
+  .dk-auth-card {
+    padding: 16px;
+  }
+
+  .dk-auth-heading-icon {
+    display: none;
+  }
+
+  .dk-auth-card h2 {
+    margin-top: 8px;
+    font-size: 19px;
+  }
+
+  .dk-auth-form {
+    gap: 10px;
+  }
+
+  .dk-input-with-icon {
+    min-height: 52px;
+  }
+
+  .dk-input-with-icon input {
+    min-height: 48px;
+  }
+
+  .dk-auth-submit {
+    min-height: 52px;
+  }
+
+  .dk-auth-divider {
+    margin: 10px 0 7px;
+  }
+
+  .dk-auth-footnote {
+    margin-top: 9px;
+  }
+}
