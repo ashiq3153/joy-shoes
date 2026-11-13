@@ -11,7 +11,7 @@ Shop owner browser / mobile browser → Vercel Next.js App Router → Supabase A
 5. Data / security layer (Supabase): constraints, RLS policies, Storage policies and indexes.
 
 ## 3. Tenant context
-An authenticated user loads shops where shops.owner_id = auth.uid(). The UI keeps one selected shop ID. Every new sales, expense, product and subscription request is filtered or written with that shop ID. PostgreSQL RLS and foreign keys validate the relationship; UI filtering alone is not security.
+An authenticated user loads shops where shops.owner_id = auth.uid(). The UI keeps one selected shop ID. Every new sales, expense, product and subscription request is filtered or written with that shop ID. PostgreSQL RLS and composite foreign keys validate the relationship; UI filtering alone is not security. Shop creation atomically creates its membership and seven-day trial through `create_shop_with_trial`.
 
 ## 4. Platform owner / Super Admin
 The MD is the platform owner, not a shop customer role. The Super Admin console is a separate trust boundary and will be built later. Admin roles must live in a server-managed allowlist / protected table or trusted app_metadata claim set by a server-side admin process. Never allow a browser user to self-assign admin via user_metadata. Service-role operations stay behind a server endpoint or Edge Function and must be audited.
