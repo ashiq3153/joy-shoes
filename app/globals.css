@@ -1075,3 +1075,27 @@ button,input,select,textarea{font-family:inherit}button{-webkit-tap-highlight-co
     padding-bottom: 18px;
   }
 }
+
+
+/* Welcome screen: keep the pale decorative curves below the feature cards */
+.dk-welcome-art::before {
+  bottom: -34% !important;
+  height: 28% !important;
+}
+.dk-welcome-art::after {
+  bottom: -39% !important;
+  height: 28% !important;
+}
+.dk-welcome-wave {
+  display: none !important;
+}
+@media (max-height: 760px) {
+  .dk-welcome-art::before {
+    bottom: -38% !important;
+    height: 30% !important;
+  }
+  .dk-welcome-art::after {
+    bottom: -43% !important;
+    height: 30% !important;
+  }
+}
