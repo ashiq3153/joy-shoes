@@ -18,7 +18,7 @@ export default function AuthPanel({onLogin,onSignup,busy,notice,error}){
      <label className="dk-field"><span>মোবাইল নম্বর</span><input value={phone} onChange={e=>setPhone(e.target.value)} placeholder="01XXXXXXXXX" inputMode="tel" required/></label>
     </>:null}
     <label className="dk-field"><span>ইমেইল ঠিকানা</span><input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="আপনার ইমেইল" autoComplete="email" required/></label>
-    <label className="dk-field"><span>পাসওয়ার্ড</span><input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="কমপক্ষে ৮ অক্ষর" minLength={8} required autoComplete={mode==="signup"?"new-password":"current-password"}/></label>
+    <label className="dk-field"><span>পাসওয়ার্ড</span><input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder={mode==="signup"?"কমপক্ষে ৮ অক্ষর":"পাসওয়ার্ড"} minLength={mode==="signup"?8:undefined} required autoComplete={mode==="signup"?"new-password":"current-password"}/></label>
     <button className="dk-primary-button" disabled={busy}>{busy?"অপেক্ষা করুন…":mode==="signup"?"অ্যাকাউন্ট তৈরি করুন":"লগইন করুন"} <span>→</span></button>
    </form>
    {notice?<div className="dk-notice">{notice}</div>:null}{error?<div className="dk-error">{error}</div>:null}
