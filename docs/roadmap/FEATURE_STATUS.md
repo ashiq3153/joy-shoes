@@ -19,7 +19,7 @@ Status meanings: LIVE FOUNDATION = code/database exists; PARTIAL = usable slice 
 | Seven-day trial | LIVE FOUNDATION | One trial row per shop created atomically with shop; automatic expiry enforcement still pending |
 | ৳২০০ / shop / month plan | LIVE FOUNDATION | Price and per-shop billing schema; renewal and paid access enforcement pending |
 | Manual bKash / Nagad request | PARTIAL / HELD | Payment schema and ownership policy exist; submit UI is disabled until official receiver details and admin verification are available |
-| Dashboard current-shop sales / expense stats | LIVE FOUNDATION | Uses new shop-scoped tables only; reference-led mobile layout, Bengali labels, larger cover card, 3-column stats and 4-column module grid staged on `ui/dashboard-reference-polish`; new-shop action moved into shop profile; preview/build verification pending |
+| Dashboard current-shop sales / expense stats | LIVE FOUNDATION | Uses new shop-scoped tables only; reference-led mobile layout, Bengali labels, larger cover card, 3-column stats and 4-column module grid staged on `ui/dashboard-reference-polish`; new-shop action moved into shop profile; Preview build is READY, owner visual review pending before production |
 | Supplier directory / supplier ledger | LIVE FOUNDATION | suppliers.shop_id backfilled; new shop-scoped list/create screen and SECURITY INVOKER ledger view; purchase/payment/return entry remains legacy-only |
 | Purchases / supplier payments / purchase returns | PLANNED for tenancy migration | Old RPCs still use owner_id and must be scoped before enabling in new shops |
 | Employee directory | LIVE FOUNDATION | employees.shop_id backfilled; new shop-scoped list/create screen; employee_sales attribution remains legacy-only |
