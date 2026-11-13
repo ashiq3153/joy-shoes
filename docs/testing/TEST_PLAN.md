@@ -20,9 +20,9 @@ Never use real customer money, genuine bKash/Nagad transaction IDs, or real cust
 | SHOP-01 | Select business category | Six categories available | Code present; authenticated UI test pending |
 | SHOP-02 | Create new shop | Shop + owner membership + seven-day Starter trial created atomically | PASS — RPC exercised; temporary test shop removed |
 | SHOP-03 | Owner creates second shop | Both shops appear in the shop switcher | Database supports multiple; authenticated UI test pending |
-| PROF-01 | Upload logo / cover | JPEG/PNG/WebP up to 5 MB stored under the shop UUID path | Policies and UI present; upload test pending |
-| SALE-01 | Add multiple sales on one date | Each sale is a separate timestamped shop_sales row | Schema/UI present; full UI test pending |
-| EXP-01 | Add expense | Shop-scoped expense row saved with one of the defined categories | Schema/UI present; full UI test pending |
+| PROF-01 | Upload logo / cover | JPEG/PNG/WebP up to 5 MB stored under `<auth-user-id>/<shop-id>/...` | Policy/path corrected and build deployed; real browser upload test pending |
+| SALE-01 | Add multiple sales on one date | Each sale is a separate timestamped shop_sales row; form defaults to cash without a payment-method selector | Schema/UI present; authenticated UI test pending |
+| EXP-01 | Add expense | Shop-scoped expense row saved with one of the defined categories; form defaults to cash without a payment-method selector | Schema/UI present; authenticated UI test pending |
 | INV-01 | Add/search product | Product belongs only to selected shop | Schema/UI present; full UI test pending |
 | SUP-01 | Add supplier in selected shop | Supplier row stores selected shop_id and appears only in that shop list | PASS — database write smoke test; frontend browser flow pending |
 | EMP-01 | Add employee in selected shop | Employee row stores selected shop_id and appears only in that shop list | PASS — database write smoke test; frontend browser flow pending |
@@ -45,7 +45,7 @@ Never use real customer money, genuine bKash/Nagad transaction IDs, or real cust
 The current tests are focused SQL smoke checks. Run the full matrix again after any policy, schema, RPC, or membership change. Do not claim the entire app is penetration-tested.
 
 ## 4. Regression tests for legacy JOY SHOES
-- Confirm legacy daily_sales, suppliers, expenses and employees counts before and after a migration; suppliers/employees now also require shop_id mapping parity.
+- JOY SHOES demo row cleanup verified: legacy sales, suppliers, employees, employee-sales, expenses, cash closing, supplier payments, cash movements and audit rows are now zero. The shop, owner profile, membership and subscription remain. No other owner/shop was changed.
 - Confirm legacy sales totals, supplier balances, purchase returns, employee attribution and daily closings match before/after.
 - Confirm a second shop cannot read or mutate any legacy owner-scoped record until the full legacy shop_id migration is complete.
 - Keep /workspace available to the primary legacy shop during the migration.
@@ -68,3 +68,4 @@ The current tests are focused SQL smoke checks. Run the full matrix again after 
 - Subscription renewal approval and paid-access enforcement.
 - Complete browser QA of registration, shop switching, media upload and all transaction screens.
 - Supabase Auth leaked-password protection warning must be reviewed and enabled.
+- Retry logo/cover upload from a signed-in browser and confirm a successful Storage upload before marking PROF-01 PASS.
