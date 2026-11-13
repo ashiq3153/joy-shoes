@@ -13,7 +13,7 @@ export default function DashboardHome({shop,profile,sales,expenses,products,subs
  const today=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Dhaka",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
  const todaySales=sales.filter(r=>r.sale_date===today),todayExpenses=expenses.filter(r=>r.expense_date===today);
  const salesTotal=todaySales.reduce((n,r)=>n+Number(r.amount||0),0),expensesTotal=todayExpenses.reduce((n,r)=>n+Number(r.amount||0),0);
- const hasCost=todaySales.some(r=>r.cost_amount!==null),profit=salesTotal-todaySales.reduce((n,r)=>n+Number(r.cost_amount||0),0);
+ const hasCost=todaySales.length>0&&todaySales.every(r=>r.cost_amount!==null&&r.cost_amount!==undefined),profit=salesTotal-todaySales.reduce((n,r)=>n+Number(r.cost_amount||0),0);
  const recent=[...sales.map(r=>({...r,_type:"sale",_date:r.sold_at||r.created_at})),...expenses.map(r=>({...r,_type:"expense",_date:r.created_at}))].sort((a,b)=>new Date(b._date)-new Date(a._date)).slice(0,6);
  const days=subscription?.trial_ends_at?Math.max(0,Math.ceil((new Date(subscription.trial_ends_at)-Date.now())/86400000)):null;
  const trialCaption=subscription?.status==="active"?"আপনার সাবস্ক্রিপশন সক্রিয়":days===null?"ট্রায়ালের তথ্য পাওয়া যায়নি":days>0?"আর "+days+" দিন বিনামূল্যে ব্যবহার করুন":"ট্রায়াল শেষ—নবায়ন প্রয়োজন";
