@@ -18,14 +18,15 @@ export default function DashboardHome({shop,sales,expenses,products,subscription
  const hasCost=todaySales.length>0&&todaySales.every(r=>r.cost_amount!==null&&r.cost_amount!==undefined);
  const profit=salesTotal-todaySales.reduce((n,r)=>n+Number(r.cost_amount||0),0);
  const recent=[...sales.map(r=>({...r,_type:"sale",_date:r.sold_at||r.created_at})),...expenses.map(r=>({...r,_type:"expense",_date:r.created_at}))].sort((a,b)=>new Date(b._date)-new Date(a._date)).slice(0,5);
- const categoryName=SHOP_CATEGORIES.find(item=>item.id===shop.category)?.title||"দোকান";
+ const shopCategory=SHOP_CATEGORIES.find(item=>item.id===shop.category)||SHOP_CATEGORIES.find(item=>item.id==="other");
+ const categoryName=shopCategory?.title||"দোকান";
+ const categoryIcon=shopCategory?.icon||"🏪";
  const days=subscription?.trial_ends_at?Math.max(0,Math.ceil((new Date(subscription.trial_ends_at)-Date.now())/86400000)):null;
  const trialCaption=subscription?.status==="active"?"আপনার সাবস্ক্রিপশন সক্রিয়":days===null?"ট্রায়ালের তথ্য পাওয়া যায়নি":days>0?"আর "+days.toLocaleString("bn-BD")+" দিন বিনামূল্যে ব্যবহার করুন":"ট্রায়াল শেষ—নবায়ন প্রয়োজন";
  return <div className="dk-dashboard-content">
-  <section className="dk-shop-banner" style={shop.cover_url?{backgroundImage:"linear-gradient(90deg,rgba(0,42,28,.82),rgba(0,48,31,.23)),url("+shop.cover_url+")"}:undefined}>
+  <section className="dk-shop-banner" style={shop.cover_url?{backgroundImage:"linear-gradient(90deg,rgba(0,35,24,.88) 0%,rgba(0,49,32,.69) 46%,rgba(0,40,28,.12) 100%),linear-gradient(0deg,rgba(0,34,24,.24),transparent 62%),url("+shop.cover_url+")"}:undefined}>
    <div className="dk-shop-brand">{shop.logo_url?<img src={shop.logo_url} alt="দোকানের লোগো"/>:<span>{shop.name?.slice(0,1)||"দ"}</span>}</div>
-   <div className="dk-shop-banner-copy"><small>আপনার দোকান</small><h1>{shop.name}</h1><p>{shop.address||"আপনার দোকানের সব হিসাব এক জায়গায়"}</p><span className="dk-shop-category-tag">{categoryName}</span></div>
-   <button className="dk-banner-edit" onClick={()=>onNavigate("profile")} aria-label="দোকানের তথ্য সম্পাদনা">✎</button>
+   <div className="dk-shop-banner-copy"><small>আপনার দোকান</small><h1>{shop.name} <span className="dk-shop-category-emoji" aria-label={categoryName}>{categoryIcon}</span></h1><p>{shop.address||"আপনার দোকানের সব হিসাব এক জায়গায়"}</p><span className="dk-shop-category-tag">{categoryName}</span></div>
   </section>
   {shops.length>1?<div className="dk-shop-switcher"><span>বর্তমান দোকান</span><select value={activeShopId} onChange={e=>onSwitchShop(e.target.value)}>{shops.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select></div>:null}
   <div className="dk-date-line"><span>▣</span><div><small>আজকের হিসাব</small><b>{new Date().toLocaleDateString("bn-BD",{timeZone:"Asia/Dhaka",weekday:"long",day:"numeric",month:"long",year:"numeric"})}</b></div></div>
