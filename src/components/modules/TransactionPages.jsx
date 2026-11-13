@@ -2,7 +2,7 @@
 import {useState} from "react";
 import {EXPENSE_CATEGORIES,PAYMENT_METHODS} from "../../lib/dokankhata/constants";
 import {money,dateBn} from "../../lib/dokankhata/format";
-const today=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Dhaka"}).format(new Date());
+const today=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Dhaka",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 export function SalesPage({shop,rows,onSave,busy,onBack}){
  const [amount,setAmount]=useState(""),[cost,setCost]=useState(""),[date,setDate]=useState(today()),[method,setMethod]=useState("cash"),[seller,setSeller]=useState(""),[notes,setNotes]=useState("");
  const submit=e=>{e.preventDefault();onSave({amount:Number(amount),cost_amount:cost===""?null:Number(cost),sale_date:date,payment_method:method,seller_name:seller.trim()||null,notes:notes.trim()||null},()=>{setAmount("");setCost("");setSeller("");setNotes("");});};
