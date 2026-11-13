@@ -1542,3 +1542,60 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}
     margin-top: 9px;
   }
 }
+
+
+/* Final mobile auth alignment corrections */
+@media (max-width: 900px) {
+  /* Login/signup is the destination screen: do not show a redundant back control. */
+  .dk-auth-back { display: none !important; }
+
+  /* Keep the primary action visually centered; the arrow is decorative and anchored. */
+  .dk-auth-submit {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-right: 54px;
+    padding-left: 54px;
+  }
+  .dk-auth-submit > span {
+    position: absolute;
+    right: 19px;
+    top: 50%;
+    margin: 0;
+    transform: translateY(-50%);
+    line-height: 1;
+  }
+
+  .dk-auth-card-top {
+    min-height: 22px;
+  }
+  .dk-auth-step {
+    text-align: right;
+  }
+  .dk-auth-switch {
+    justify-content: center;
+    align-items: baseline;
+    column-gap: 7px;
+    row-gap: 3px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .dk-auth-switch button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    font-size: 13px;
+    line-height: 1.6;
+    text-align: center;
+  }
+  .dk-auth-footnote {
+    justify-content: center;
+    min-height: 48px;
+    font-size: 11px;
+    line-height: 1.6;
+    text-align: center;
+  }
+}
