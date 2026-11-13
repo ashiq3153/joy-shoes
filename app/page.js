@@ -455,15 +455,15 @@ export default function Home() {
     ...employee, total: staffFiltered.filter((row) => row.employee_id === employee.id).reduce((s, row) => s + Number(row.sales_amount), 0)
   })).sort((a, b) => b.total - a.total);
 
-  if (!authReady) return <main className="shell"><div className="loading-screen">JOY SHOES<br />লোড হচ্ছে...</div></main>;
+  if (!authReady) return <main className="shell"><div className="loading-screen">DokanKhata<br />লোড হচ্ছে...</div></main>;
 
   if (!session) return <main className="shell auth-shell">
-    <header className="top"><div className="logo">JS</div><div><small>সহজ ব্যবসা ব্যবস্থাপনা</small><h1>JOY SHOES</h1></div></header>
+    <header className="top"><div className="logo">DK</div><div><small>দোকানের ডিজিটাল হিসাবখাতা</small><h1>DokanKhata</h1></div></header>
     <section className="auth-card">
       <div className="auth-icon">🔐</div>
-      <small>OWNER ACCESS</small>
+      <small>DOKANKHATA ACCOUNT</small>
       <h2>{isSignup ? "মালিকের অ্যাকাউন্ট তৈরি" : "মালিক লগইন"}</h2>
-      <p>এই অ্যাপটি শুধু দোকানের মালিক ব্যবহার করবেন।</p>
+      <p>আপনার দোকানের বিক্রি, খরচ ও হিসাব এক জায়গায় রাখুন।</p>
       <form onSubmit={async (event) => {
         event.preventDefault(); setBusy(true); setFlash("");
         try {
@@ -485,7 +485,7 @@ export default function Home() {
       </button>
       {flash ? <p className="notice">{flash}</p> : null}
     </section>
-    <footer>JOY SHOES · শুধু মালিকের ব্যবহারের জন্য</footer>
+    <footer>DokanKhata · আপনার দোকানের ডিজিটাল হিসাবখাতা</footer>
   </main>;
 
   const moduleCards = [
@@ -494,13 +494,13 @@ export default function Home() {
     ["📦", "নতুন মাল কেনা", "ক্রয়, আইটেম ও ক্যাশ মেমো", "purchases", "purple"],
     ["💸", "খরচ", "দোকান ও পারিবারিক খরচ", "expenses", "yellow"],
     ["🧑‍💼", "কর্মচারী", "কর্মচারীর বিক্রির হিসাব", "employees", "orange"],
-    ["🧮", "দিনের হিসাব মিলান", "দিন শেষে হাতে থাকা টাকা মিলান", "cash", "pink"]
+    ["📊", "দিনের বিবরণ", "দিনের বিক্রি, খরচ ও লেনদেনের সারাংশ", "cash", "pink"]
   ];
 
   return <main className="shell app-shell">
     <header className="top app-top">
-      <div className="logo">JS</div>
-      <div className="brand-title"><small>সহজ ব্যবসা ব্যবস্থাপনা</small><h1>JOY SHOES</h1></div>
+      <div className="logo">DK</div>
+      <div className="brand-title"><small>DokanKhata · দোকানের হিসাব</small><h1>JOY SHOES</h1></div>
       <button className="logout-btn" onClick={signOut}>↪ বের হন</button>
     </header>
 
@@ -750,7 +750,7 @@ export default function Home() {
     </> : null}
 
     {active === "cash" ? <>
-      <PageHead eyebrow="DAILY CASH CLOSING" title="দিনের ক্যাশ মিলান" subtitle="শুধু হাতে থাকা নগদ টাকা এখানে মিলাবেন। ব্যাংক ও মোবাইল পেমেন্ট আলাদা।" onBack={() => go("dashboard")} />
+      <PageHead eyebrow="DAILY CASH CLOSING" title="দিনের বিবরণ" subtitle="শুধু হাতে থাকা নগদ টাকা এখানে মিলাবেন। ব্যাংক ও মোবাইল পেমেন্ট আলাদা।" onBack={() => go("dashboard")} />
       <section className="panel"><form onSubmit={saveClosing}>
         <Field label="তারিখ" type="date" value={closingForm.closing_date} onChange={(v) => setClosingForm({ ...closingForm, closing_date: v })} />
         <div className="form-section-title">টাকা আসার হিসাব</div>
@@ -795,7 +795,7 @@ export default function Home() {
       </section>
     </> : null}
 
-    <footer>JOY SHOES · আপনার ব্যবসার হিসাব, আপনার নিয়ন্ত্রণে</footer>
+    <footer>DokanKhata · আপনার দোকানের ডিজিটাল হিসাবখাতা</footer>
     {busy ? <div className="busy-overlay"><div>সংরক্ষণ হচ্ছে…</div></div> : null}
   </main>;
 }
