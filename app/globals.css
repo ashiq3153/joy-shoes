@@ -1599,3 +1599,18 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}
     text-align: center;
   }
 }
+
+/* Compact Bengali-first authentication screen */
+.dk-auth-compact{min-height:100svh;justify-content:center;align-items:center;padding:24px 16px calc(24px + env(safe-area-inset-bottom))}
+.dk-auth-compact .dk-auth-card{width:100%;max-width:520px;margin:0 auto;padding:28px;border-radius:24px}
+.dk-auth-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 20px;color:#087b50;font-size:20px;font-weight:900}
+.dk-auth-brand .dk-auth-mini-logo{width:42px;height:42px;margin:0;border-radius:13px}
+.dk-auth-brand .dk-brand-mark-svg{width:31px;height:31px}
+.dk-auth-compact .dk-auth-card h2{margin:0 0 7px;text-align:center;font-size:23px;line-height:1.5}
+.dk-auth-compact .dk-auth-intro{margin:0 0 22px;text-align:center;color:#667d70;font-size:14px;line-height:1.7}
+.dk-auth-compact .dk-auth-form{gap:13px}
+.dk-forgot-link{align-self:flex-end;min-height:36px;margin-top:-7px;padding:4px 0;color:#087b50;background:transparent;border:0;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.dk-auth-compact .dk-auth-switch{justify-content:center;flex-wrap:wrap;margin-top:18px;text-align:center}
+.dk-auth-compact .dk-auth-switch button{text-align:center}
+@media(max-width:900px){.dk-auth-compact{justify-content:center;padding:18px 16px calc(22px + env(safe-area-inset-bottom))}.dk-auth-compact .dk-auth-card{max-width:100%;padding:23px 21px;border-radius:22px}.dk-auth-brand{margin-bottom:16px;font-size:19px}.dk-auth-compact .dk-auth-card h2{font-size:22px}.dk-auth-compact .dk-auth-intro{margin-bottom:19px;font-size:13px}.dk-forgot-link{font-size:13px}}
+@media(max-width:380px){.dk-auth-compact{padding-right:12px;padding-left:12px}.dk-auth-compact .dk-auth-card{padding:19px 17px}.dk-auth-compact .dk-auth-card h2{font-size:20px}}
