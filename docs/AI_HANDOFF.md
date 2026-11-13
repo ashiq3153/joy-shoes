@@ -51,6 +51,10 @@ This file is the handoff contract for ChatGPT, other AI agents and future develo
 - New root dashboard uses shop_sales and shop_expenses. It does not yet import legacy daily_sales / expenses into these new tables.
 - Legacy accounting UI stays available at /workspace for the primary legacy shop.
 - The /admin path is only a placeholder; no admin privileges or actions are exposed there.
+- The mobile dashboard shop banner/date typography were enlarged; the top-left hamburger now opens an in-place drawer with useful links rather than the old full-page placeholder.
+- Quick sale and expense forms now omit the payment-method selector and rely on the cash database default; supplier payment/settlement methods remain separate where accounting-relevant.
+- Shop media path is now <auth-user-id>/<shop-id>/<filename>; Storage RLS verifies both path segments against the authenticated owner/membership. Do not mark uploads verified until a real signed-in browser upload succeeds; direct SQL storage.objects tests did not establish an end-to-end upload.
+- JOY SHOES demo accounting rows were cleared at the user's explicit request. Preserve the JOY SHOES shop, owner account/profile, membership and subscription/trial. A legacy supplier image object remains in the private legacy bucket without a supplier-row reference.
 - Phone is stored as a profile field; it is not OTP-verified.
 - Google OAuth is not enabled until credentials and redirect URLs are configured.
 - Manual payment destination details are not configured. The customer-facing payment submit form is intentionally disabled; do not collect TxIDs or accept money until official receiver instructions and admin review are available.
