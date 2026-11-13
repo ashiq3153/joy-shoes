@@ -560,9 +560,25 @@ export default function Home() {
     </> : null}
 
     {active === "suppliers" ? <>
-      <PageHead eyebrow="SUPPLIERS" title="মহাজন / পাইকারের হিসাব" subtitle="প্রত্যেক মহাজনের আলাদা বাকি, ক্রয় ও পেমেন্টের হিসাব থাকবে।" onBack={() => go("dashboard")} />
+      <PageHead eyebrow="SUPPLIERS" title="মহাজন তালিকা" subtitle="মহাজনের নাম চাপলে তার সম্পূর্ণ প্রোফাইল ও লেনদেন দেখুন।" onBack={() => go("dashboard")} />
       <section className="panel">
-        <div className="panel-title"><h2>＋ নতুন মহাজন যোগ করুন</h2></div>
+        <div className="supplier-toolbar">
+          <div><h2>সকল মহাজন</h2><small>{data.suppliers.length} জন মহাজন</small></div>
+          <button className="primary-btn supplier-add-btn" type="button" onClick={() => go("supplier-create")}>＋ মহাজন যোগ করুন</button>
+        </div>
+        {data.suppliers.length ? <div className="supplier-list">{data.suppliers.map((s) => {
+          const balance = data.ledger.find((l) => l.supplier_id === s.id)?.outstanding_balance ?? s.opening_balance;
+          return <button type="button" className="supplier-card supplier-card-button" key={s.id} onClick={() => { setSelectedSupplier(s.id); go("supplier-profile"); }}>
+            <div className="supplier-avatar">👤</div><div className="supplier-info"><b>{s.shop_name || s.owner_name}</b><small>{s.owner_name}{s.phone ? " · " + s.phone : ""}</small><strong>{money(balance)} <em>বাকি</em></strong></div>
+            <span className="supplier-open">প্রোফাইল দেখুন →</span>
+          </button>;
+        })}</div> : <Empty>এখনো কোনো মহাজন যোগ করা হয়নি। উপরের ＋ বাটনে চাপ দিয়ে প্রথম মহাজন যোগ করুন।</Empty>}
+      </section>
+    </> : null}
+
+    {active === "supplier-create" ? <>
+      <PageHead eyebrow="NEW SUPPLIER" title="নতুন মহাজন যোগ করুন" subtitle="মহাজনের পরিচয় ও যোগাযোগের তথ্য লিখুন।" onBack={() => go("suppliers")} />
+      <section className="panel">
         <form onSubmit={saveSupplier}>
           <Field label="মহাজনের নাম" value={supplierForm.owner_name} onChange={(v) => setSupplierForm({ ...supplierForm, owner_name: v })} required placeholder="নাম লিখুন" />
           <Field label="দোকানের নাম" value={supplierForm.shop_name} onChange={(v) => setSupplierForm({ ...supplierForm, shop_name: v })} placeholder="দোকানের নাম" />
@@ -576,19 +592,52 @@ export default function Home() {
           <button className="primary-btn full-btn" disabled={busy}>মহাজন সংরক্ষণ করুন</button>
         </form>
       </section>
-      <section className="panel"><div className="panel-title"><h2>মহাজনের তালিকা</h2><span>{data.suppliers.length} জন</span></div>
-        {data.suppliers.length ? <div className="supplier-list">{data.suppliers.map((s) => {
-          const balance = data.ledger.find((l) => l.supplier_id === s.id)?.outstanding_balance ?? s.opening_balance;
-          return <article className="supplier-card" key={s.id}>
-            <div className="supplier-avatar">👤</div><div className="supplier-info"><b>{s.shop_name || s.owner_name}</b><small>{s.owner_name}{s.phone ? " · " + s.phone : ""}</small><strong>{money(balance)} <em>বাকি</em></strong></div>
-            <div className="supplier-actions">
-              <button onClick={() => { setSelectedSupplier(s.id); setPaymentForm({ ...paymentForm, supplier_id: s.id }); go("payments"); }}>টাকা দিন</button>
-              <button onClick={() => { setSelectedSupplier(s.id); setReturnForm({ ...returnForm, supplier_id: s.id }); go("returns"); }}>মাল ফেরত</button>
-            </div>
-          </article>;
-        })}</div> : <Empty>প্রথমে উপরের ফর্মে মহাজনের নাম যোগ করুন।</Empty>}
-      </section>
     </> : null}
+
+    {active === "supplier-profile" ? (() => {
+      const supplier = data.suppliers.find((item) => item.id === selectedSupplier);
+      if (!supplier) return <section className="panel"><Empty>মহাজন পাওয়া যায়নি। তালিকা থেকে আবার নির্বাচন করুন।</Empty><button className="secondary-btn" onClick={() => go("suppliers")}>মহাজন তালিকায় ফিরুন</button></section>;
+      const ledger = data.ledger.find((item) => item.supplier_id === supplier.id);
+      const supplierPurchases = data.purchases.filter((item) => item.supplier_id === supplier.id);
+      const supplierPayments = data.payments.filter((item) => item.supplier_id === supplier.id);
+      const supplierReturns = data.returns.filter((item) => item.supplier_id === supplier.id);
+      return <>
+        <PageHead eyebrow="SUPPLIER PROFILE" title={supplier.shop_name || supplier.owner_name} subtitle="মহাজনের পরিচয়, বাকি ও সব লেনদেন এক জায়গায়।" onBack={() => go("suppliers")} />
+        <section className="panel supplier-profile-card">
+          <div className="supplier-profile-heading"><div className="supplier-avatar large-avatar">👤</div><div><h2>{supplier.owner_name}</h2><p>{supplier.shop_name || "দোকানের নাম দেওয়া হয়নি"}</p></div></div>
+          <div className="supplier-detail-grid">
+            <div><small>মোবাইল</small><b>{supplier.phone || "দেওয়া নেই"}</b></div>
+            <div><small>ঠিকানা</small><b>{supplier.address || "দেওয়া নেই"}</b></div>
+            <div><small>বাজার / লোকেশন</small><b>{supplier.location_text || "দেওয়া নেই"}</b></div>
+            <div><small>শুরুর বাকি</small><b>{money(supplier.opening_balance)}</b></div>
+          </div>
+          {supplier.notes ? <p className="supplier-notes">{supplier.notes}</p> : null}
+          <div className="supplier-balance-highlight"><span>বর্তমান মোট বাকি</span><strong>{money(ledger?.outstanding_balance ?? supplier.opening_balance)}</strong></div>
+          <div className="supplier-profile-actions">
+            <button type="button" onClick={() => { setPaymentForm({ ...paymentForm, supplier_id: supplier.id }); go("payments"); }}>💳 টাকা দিন</button>
+            <button type="button" onClick={() => { setReturnForm({ ...returnForm, supplier_id: supplier.id }); go("returns"); }}>↩ মাল ফেরত</button>
+            <button type="button" onClick={() => { setPurchaseForm({ ...purchaseForm, supplier_id: supplier.id }); go("purchases"); }}>＋ নতুন ক্রয়</button>
+          </div>
+        </section>
+        <section className="panel"><h2>লেনদেনের সারাংশ</h2>
+          <div className="stats-grid">
+            <Stat label="মোট ক্রয়" value={money(ledger?.total_purchases ?? 0)} tone="blue" />
+            <Stat label="মোট পেমেন্ট" value={money(ledger?.total_payments ?? 0)} tone="green" />
+            <Stat label="বাকিতে সমন্বয়" value={money(ledger?.credit_adjustment_returns ?? 0)} tone="yellow" />
+            <Stat label="নগদ ফেরত" value={money(supplierReturns.filter((r) => r.settlement_type === "cash_refund").reduce((n, r) => n + Number(r.total_amount || 0), 0))} tone="purple" />
+          </div>
+        </section>
+        <section className="panel"><div className="panel-title"><h2>ক্রয়ের ইতিহাস</h2><span>{supplierPurchases.length} চালান</span></div>
+          {supplierPurchases.length ? <div className="record-list">{supplierPurchases.map((p) => <div className="record-row" key={p.id}><div><b>{p.invoice_number || "ক্রয় চালান"}</b><small>{dateText(p.purchase_date)} · পরিশোধ {money(p.amount_paid)}</small></div><strong>{money(p.subtotal)}</strong></div>)}</div> : <Empty>এই মহাজনের কোনো ক্রয় এখনো নেই।</Empty>}
+        </section>
+        <section className="panel"><div className="panel-title"><h2>পেমেন্টের ইতিহাস</h2><span>{supplierPayments.length} বার</span></div>
+          {supplierPayments.length ? <div className="record-list">{supplierPayments.map((p) => <div className="record-row" key={p.id}><div><b>{dateText(p.payment_date)}</b><small>{p.payment_method}{p.reference_note ? " · " + p.reference_note : ""}</small></div><strong>{money(p.amount)}</strong></div>)}</div> : <Empty>কোনো পেমেন্ট রেকর্ড নেই।</Empty>}
+        </section>
+        <section className="panel"><div className="panel-title"><h2>মাল ফেরতের ইতিহাস</h2><span>{supplierReturns.length} বার</span></div>
+          {supplierReturns.length ? <div className="record-list">{supplierReturns.map((r) => <div className="record-row" key={r.id}><div><b>{dateText(r.return_date)}</b><small>{r.settlement_type === "credit_adjustment" ? "বাকি থেকে সমন্বয়" : "নগদ ফেরত"}</small></div><strong>{money(r.total_amount)}</strong></div>)}</div> : <Empty>কোনো মাল ফেরতের রেকর্ড নেই।</Empty>}
+        </section>
+      </>;
+    })() : null}
 
     {active === "purchases" ? <>
       <PageHead eyebrow="PURCHASE ENTRY" title="নতুন মাল কেনার হিসাব" subtitle="একটি চালানে একাধিক ডিজাইন ও জোড়া যোগ করতে পারবেন।" onBack={() => go("dashboard")} />
