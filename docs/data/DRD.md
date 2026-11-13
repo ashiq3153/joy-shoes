@@ -1,6 +1,6 @@
 # Data Requirements & Database Design (DRD)
 
-**Version:** 1.0 · **Status:** SaaS core tables deployed; legacy migration pending
+**Version:** 1.1 · **Status:** SaaS core deployed; supplier and employee directories shop-scoped; accounting ledger migration pending
 
 ## 1. Tenancy model
 - Auth identity: auth.users.id.
@@ -21,6 +21,12 @@ Existing fields include id, owner_id, name, category, phone, address, logo_url, 
 ### shop_memberships
 id, shop_id, user_id, role (owner/manager/staff), status (active/invited/suspended), created_at. Current UI creates the owner membership; invitation flow is future work.
 
+### suppliers (partially migrated)
+Legacy supplier fields are preserved. A required shop_id has been added and existing suppliers are backfilled to their verified owner shop. Composite FK (shop_id, owner_id) references shops(id, owner_id). The supplier list and supplier ledger view are filtered by shop_id. Existing RLS remains owner_id-based; manager/staff access is not enabled.
+
+### employees (partially migrated)
+Legacy employee fields are preserved. A required shop_id has been added and existing employees are backfilled to their verified owner shop. Composite FK (shop_id, owner_id) references shops(id, owner_id). The new employee directory is shop-filtered. employee_sales attribution has not yet been shop-scoped.
+
 ### products
 Existing shop-scoped catalog: shop_id, product_code, product_name, category, brand, barcode, unit, purchase_price, selling_price, stock_qty, low_stock_at, is_active, notes, created_by and timestamps.
 
@@ -40,6 +46,8 @@ id, shop_id, owner_id, subscription_id, amount (exactly ৳২০০), payment_m
 - owners 1 → many shops
 - auth.users 1 → 1 owner_profiles
 - shops 1 → many shop_memberships
+- shops 1 → many suppliers (directory rows shop-scoped)
+- shops 1 → many employees (directory rows shop-scoped)
 - shops 1 → many products
 - shops 1 → many shop_sales
 - shops 1 → many shop_expenses
@@ -50,15 +58,16 @@ id, shop_id, owner_id, subscription_id, amount (exactly ৳২০০), payment_m
 - owner_profiles: user can read/insert/update only their own row.
 - shops: owner policies control shop creation, reading and updates.
 - products: active shop members and shop owners can read/write according to current policies.
+- suppliers and employees: new rows include shop_id and are queried by selected shop; current table RLS still checks owner_id = auth.uid(), so only the account owner has access (manager/staff access is not enabled).
 - shop_sales and shop_expenses: shop owner or active membership; created_by must match auth.uid() on insert/update.
 - subscriptions: owner reads; user may create only starter/trialing subscription within a seven-day window; no client-side activation/update policy.
 - subscription_payments: owner reads and submits fixed ৳২০০ pending requests; no client-side approval.
 - Storage: insert/delete scoped to first path segment matching shop UUID and owner/member authorization.
 
 ## 5. Legacy tables not yet migrated
-Existing tables such as daily_sales, suppliers, purchases, purchase_items, supplier_payments, purchase_returns, return_items, cash_memos, employees, employee_sales, expenses, cash_movements, daily_closings, audit_logs and supplier_ledger_view still primarily use owner_id.
+Remaining legacy accounting tables such as daily_sales, purchases, purchase_items, supplier_payments, purchase_returns, return_items, cash_memos, employee_sales, expenses, cash_movements, daily_closings and audit_logs still primarily use owner_id. The suppliers and employees directory tables now have shop_id; supplier_ledger_view has shop_id appended and is SECURITY INVOKER.
 
-Do not drop, rename, rewrite, or combine these tables blindly. Their full shop_id backfill, RPC changes, view redesign and RLS migration must be planned and tested separately. Until then, the legacy workspace is retained at /workspace and available only from the primary/legacy shop entry in the new UI.
+Do not drop, rename, rewrite, or combine these tables blindly. Remaining tables need shop_id backfills, RPC changes, view redesign and shop-aware RLS. Supplier purchases/payments/returns, employee-sales attribution, cash flows and daily closing remain in the legacy workspace at /workspace and are available only from the primary/legacy shop entry in the new UI.
 
 ## 6. Migration rules
 1. Add columns/tables before changing application reads.
