@@ -118,14 +118,18 @@ export default function AppClient(){
     phone:payload.phone||null,address:payload.address||null
    }).select("*").single();
    if(error)throw error;
-   let updated=created;
-   const logoUrl=await uploadImage(created.id,payload.logo,"logo");
-   const coverUrl=await uploadImage(created.id,payload.cover,"cover");
-   if(logoUrl||coverUrl){
-    const {data:row,error:updateError}=await supabase.from("shops").update({
-     logo_url:logoUrl||null,cover_url:coverUrl||null
-    }).eq("id",created.id).select("*").single();
-    if(updateError)throw updateError;updated=row;
+   let updated=created,mediaWarning="";
+   try {
+    const logoUrl=await uploadImage(created.id,payload.logo,"logo");
+    const coverUrl=await uploadImage(created.id,payload.cover,"cover");
+    if(logoUrl||coverUrl){
+     const {data:row,error:updateError}=await supabase.from("shops").update({
+      logo_url:logoUrl||null,cover_url:coverUrl||null
+     }).eq("id",created.id).select("*").single();
+     if(updateError)throw updateError;updated=row;
+    }
+   } catch(mediaError) {
+    mediaWarning=" দোকান তৈরি হয়েছে, তবে ছবি আপলোড হয়নি: "+mediaError.message;
    }
    const {error:memberError}=await supabase.from("shop_memberships").insert({
     shop_id:created.id,user_id:session.user.id,role:"owner",status:"active"
