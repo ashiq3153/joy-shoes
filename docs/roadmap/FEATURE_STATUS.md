@@ -2,7 +2,7 @@
 
 Status meanings: LIVE FOUNDATION = code/database exists; PARTIAL = usable slice only; PLANNED = not implemented.
 
-**Verification note — 13 November 2026:** Production homepage and `/admin` placeholder were browser-checked. The shop creation RPC was exercised with a test account and created the shop, owner membership and trial together; the test shop was deleted afterwards. Cross-user RLS read checks for `shop_sales`, `shop_expenses`, `products` and `shops` returned zero rows for the unrelated account. This is a focused smoke test, not a complete penetration test or a complete multi-tenant certification.
+**Verification note — 13 November 2026:** Production homepage and `/admin` placeholder were browser-checked. The shop creation RPC was exercised with a test account and created the shop, owner membership and trial together; the test shop was deleted afterwards. Cross-user RLS read checks for `shop_sales`, `shop_expenses`, `products`, `shops`, `suppliers`, `employees` and `supplier_ledger_view` returned zero rows for the unrelated account. Supplier/employee shop_id columns and the SECURITY INVOKER ledger view were also verified; legacy supplier and employee row counts remained unchanged. This is a focused smoke test, not a complete penetration test or a complete multi-tenant certification.
 
 | Feature | Status | Notes |
 |---|---|---|
@@ -20,9 +20,9 @@ Status meanings: LIVE FOUNDATION = code/database exists; PARTIAL = usable slice 
 | ৳২০০ / shop / month plan | LIVE FOUNDATION | Price and per-shop billing schema; renewal and paid access enforcement pending |
 | Manual bKash / Nagad request | PARTIAL / HELD | Payment schema and ownership policy exist; submit UI is disabled until official receiver details and admin verification are available |
 | Dashboard current-shop sales / expense stats | LIVE FOUNDATION | Uses new shop-scoped tables only |
-| Suppliers / supplier ledger | PLANNED for tenancy migration | Existing screen preserved under /workspace |
-| Purchases / purchase returns | PLANNED for tenancy migration | Old RPCs currently use owner_id |
-| Employees / attribution | PLANNED for tenancy migration | Keep employee sale attribution from double-counting |
+| Supplier directory / supplier ledger | LIVE FOUNDATION | suppliers.shop_id backfilled; new shop-scoped list/create screen and SECURITY INVOKER ledger view; purchase/payment/return entry remains legacy-only |
+| Purchases / supplier payments / purchase returns | PLANNED for tenancy migration | Old RPCs still use owner_id and must be scoped before enabling in new shops |
+| Employee directory | LIVE FOUNDATION | employees.shop_id backfilled; new shop-scoped list/create screen; employee_sales attribution remains legacy-only |
 | Daily cash closing | PLANNED for tenancy migration | Existing owner-scoped rows preserved |
 | Full monthly/profit report | PARTIAL | New shop entry summary only; full report later |
 | Phone OTP verification | PLANNED | Requires SMS provider and Supabase Auth setup |
