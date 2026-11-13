@@ -27,7 +27,7 @@
 | src/lib/dokankhata/ | Product constants and reusable formatters |
 | lib/supabase/ | Supabase browser client |
 | supabase/migrations/ | Versioned database migrations |
-| docs/ | Product, business, technical, data and AI handoff documentation |
+| docs/ | BRD, PRD, TRD, DRD, ADR, QA test plan and AI handoff documentation |
 
 ## 3. Engineering conventions
 - Keep app/page.js as a route adapter; do not rebuild the product in one giant page file.
@@ -66,5 +66,6 @@ The secret/service-role key must remain server-side only. No new environment var
 - Verify each migration on the connected Supabase project.
 - Run Supabase security and performance advisors after DDL.
 - Check Vercel production deployment state before announcing release.
+- Use docs/testing/TEST_PLAN.md as the source of truth for repeatable functional and tenant-isolation checks.
 - Validate registration/login, shop creation, shop switching, sale, expense, product CRUD, image upload and payment request.
-- Test RLS with two distinct authenticated users and at least two shops before declaring tenant isolation complete. Current smoke test covered shop visibility and cross-user invisibility for shop_sales/shop_expenses; repeat for every new table after schema changes.
+- Test RLS with two distinct authenticated users and at least two shops before declaring tenant isolation complete. Current smoke test covered cross-user invisibility for shops, shop_sales, shop_expenses and products, plus a rejected cross-owner shop_sales insert. This is not a full security assessment; repeat the complete matrix after schema/policy changes.
