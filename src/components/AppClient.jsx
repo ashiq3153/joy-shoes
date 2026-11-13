@@ -1,6 +1,6 @@
 "use client";
 
-import {useCallback,useEffect,useMemo,useState} from "react";
+import {useCallback,useEffect,useMemo,useRef,useState} from "react";
 import {createClient} from "../../lib/supabase/client";
 import AuthPanel from "./auth/AuthPanel";
 import ShopSetupWizard from "./onboarding/ShopSetupWizard";
@@ -21,6 +21,7 @@ export default function AppClient(){
  const [profile,setProfile]=useState(null),[data,setData]=useState(EMPTY);
  const [view,setView]=useState("home"),[busy,setBusy]=useState(false),[loading,setLoading]=useState(false);
  const [authError,setAuthError]=useState(""),[notice,setNotice]=useState(""),[flash,setFlash]=useState("");
+ const requestSequence=useRef(0);
  const activeShop=shops.find(s=>s.id===activeShopId)||shops[0]||null;
  const primaryShopId=shops[0]?.id||"";
  const legacyEnabled=!!activeShop&&activeShop.id===primaryShopId;
@@ -33,7 +34,7 @@ export default function AppClient(){
  },[supabase]);
 
  useEffect(()=>{
-  if(!session?.user?.id){setShops([]);setActiveShopId("");setProfile(null);setData(EMPTY);return;}
+  if(!session?.user?.id){requestSequence.current+=1;setShops([]);setActiveShopId("");setProfile(null);setData(EMPTY);return;}
   let alive=true;
   (async()=>{
    setLoading(true);setAuthError("");
@@ -64,7 +65,8 @@ export default function AppClient(){
  },[session?.user?.id,supabase]);
 
  const refreshShopData=useCallback(async(shopId)=>{
-  if(!shopId)return;
+  const requestId=++requestSequence.current;
+  if(!shopId){setData(EMPTY);return;}
   setData(EMPTY);setLoading(true);
   try{
    const [sales,expenses,products,subs,payments]=await Promise.all([
@@ -76,12 +78,19 @@ export default function AppClient(){
    ]);
    const failed=[sales,expenses,products,subs,payments].find(r=>r.error);
    if(failed)throw failed.error;
+   if(requestId!==requestSequence.current)return;
    setData({sales:sales.data||[],expenses:expenses.data||[],products:products.data||[],subscription:subs.data||null,payments:payments.data||[]});
-  }catch(error){setFlash("দোকানের তথ্য রিফ্রেশ হয়নি: "+(error.message||"আবার চেষ্টা করুন"));}
-  finally{setLoading(false);}
+  }catch(error){
+   if(requestId===requestSequence.current)setFlash("দোকানের তথ্য রিফ্রেশ হয়নি: "+(error.message||"আবার চেষ্টা করুন"));
+  }finally{
+   if(requestId===requestSequence.current)setLoading(false);
+  }
  },[supabase]);
 
- useEffect(()=>{if(activeShop?.id)refreshShopData(activeShop.id);else setData(EMPTY);},[activeShop?.id,refreshShopData]);
+ useEffect(()=>{
+  if(activeShop?.id)refreshShopData(activeShop.id);
+  else {requestSequence.current+=1;setData(EMPTY);}
+ },[activeShop?.id,refreshShopData]);
 
  async function login({email,password}){
   setBusy(true);setAuthError("");setNotice("");
@@ -113,11 +122,15 @@ export default function AppClient(){
   if(!session?.user?.id)return;
   setBusy(true);setFlash("");
   try{
-   const {data:created,error}=await supabase.from("shops").insert({
-    owner_id:session.user.id,name:payload.name,category:payload.category,
-    phone:payload.phone||null,address:payload.address||null
-   }).select("*").single();
-   if(error)throw error;
+   const {data:createdShopId,error:createError}=await supabase.rpc("create_shop_with_trial",{
+    p_name:payload.name,
+    p_category:payload.category,
+    p_phone:payload.phone||null,
+    p_address:payload.address||null
+   });
+   if(createError)throw createError;
+   const {data:created,error:readError}=await supabase.from("shops").select("*").eq("id",createdShopId).single();
+   if(readError)throw readError;
    let updated=created,mediaWarning="";
    try {
     const logoUrl=await uploadImage(created.id,payload.logo,"logo");
@@ -131,16 +144,8 @@ export default function AppClient(){
    } catch(mediaError) {
     mediaWarning=" দোকান তৈরি হয়েছে, তবে ছবি আপলোড হয়নি: "+mediaError.message;
    }
-   const {error:memberError}=await supabase.from("shop_memberships").insert({
-    shop_id:created.id,user_id:session.user.id,role:"owner",status:"active"
-   });
-   if(memberError)throw memberError;
-   const {error:subscriptionError}=await supabase.from("subscriptions").insert({
-    shop_id:created.id,owner_id:session.user.id,plan_code:"starter",status:"trialing"
-   });
-   if(subscriptionError)throw subscriptionError;
    setShops(old=>[...old,updated]);setActiveShopId(updated.id);setView("home");
-   await refreshShopData(updated.id);setFlash("আপনার নতুন দোকান তৈরি হয়েছে। ৭ দিনের ফ্রি ট্রায়াল শুরু হয়েছে।");
+   await refreshShopData(updated.id);setFlash("আপনার নতুন দোকান তৈরি হয়েছে। ৭ দিনের ফ্রি ট্রায়াল শুরু হয়েছে।"+mediaWarning);
   }catch(error){setFlash("দোকান তৈরি হয়নি: "+(error.message||"আবার চেষ্টা করুন"));}
   finally{setBusy(false);}
  }
