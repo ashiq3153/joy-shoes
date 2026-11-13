@@ -5,7 +5,6 @@ const MODULES=[
  {id:"suppliers",title:"মহাজন",sub:"সরবরাহকারী ও বাকি",icon:"🧰",tone:"orange"},
  {id:"employees",title:"কর্মচারী",sub:"কর্মচারী ও বিক্রি",icon:"👥",tone:"blue"},
  {id:"reports",title:"রিপোর্ট",sub:"দৈনিক ও মাসিক হিসাব",icon:"▤",tone:"red"},
- {id:"workspace",title:"ক্রয়ের হিসাব",sub:"মাল কেনা ও পেমেন্ট",icon:"🛍️",tone:"cyan"},
  {id:"profile",title:"দোকানের প্রোফাইল",sub:"নাম, ছবি ও ঠিকানা",icon:"🏪",tone:"pink"},
  {id:"subscription",title:"সাবস্ক্রিপশন",sub:"ট্রায়াল ও পেমেন্ট",icon:"👑",tone:"gold"}
 ];
@@ -34,7 +33,7 @@ export default function DashboardHome({shop,profile,sales,expenses,products,subs
   <div className="dk-section-heading"><div><small>YOUR BUSINESS</small><h2>দোকানের কাজগুলো</h2></div><span>{MODULES.length} টি মডিউল</span></div>
   <section className="dk-module-grid">{MODULES.map((item,i)=><button key={i} className="dk-module-card" onClick={()=>onNavigate(item.id)}><span className={"dk-module-icon "+item.tone}>{item.icon}</span><b>{item.title}</b><small>{item.sub}</small></button>)}</section>
   <section className="dk-panel"><div className="dk-section-heading"><div><small>RECENT ACTIVITY</small><h2>সাম্প্রতিক লেনদেন</h2></div><button className="dk-link-button" onClick={()=>onNavigate("reports")}>সব দেখুন ›</button></div>
-   {recent.length?<div className="dk-activity-list">{recent.map(row=><div className="dk-activity-row" key={row.id}><span className={row._type==="sale"?"income":"outcome"}>{row._type==="sale"?"↑":"↓"}</span><div><b>{row._type==="sale"?"বিক্রি":row.description||"খরচ"}</b><small>{dateTimeBn(row._date)} · {row.payment_method||"নগদ"}</small></div><strong className={row._type==="sale"?"income-text":"outcome-text"}>{row._type==="sale"?"+":"−"} {money(row.amount)}</strong></div>)}</div>:<div className="dk-empty">এখনো কোনো লেনদেন নেই। প্রথম বিক্রি বা খরচ যোগ করে শুরু করুন।</div>}
+   {recent.length?<div className="dk-activity-list">{recent.map(row=><div className="dk-activity-row" key={row.id}><span className={row._type==="sale"?"income":"outcome"}>{row._type==="sale"?"↑":"↓"}</span><div><b>{row._type==="sale"?"বিক্রি":row.description||"খরচ"}</b><small>{dateTimeBn(row._date)} · {row._type==="sale"?(row.seller_name||"নগদ বিক্রি"):"খরচ"}</small></div><strong className={row._type==="sale"?"income-text":"outcome-text"}>{row._type==="sale"?"+":"−"} {money(row.amount)}</strong></div>)}</div>:<div className="dk-empty">এখনো কোনো লেনদেন নেই। প্রথম বিক্রি বা খরচ যোগ করে শুরু করুন।</div>}
   </section>
   <section className="dk-subscription-strip"><div><span>👑</span><div><b>{subscription?.status==="active"?"Starter প্যাকেজ সক্রিয়":"৭ দিনের ফ্রি ট্রায়াল"}</b><small>{trialCaption}</small></div></div><div className="dk-subscription-price"><b>৳২০০</b><small>/ মাস</small></div><button onClick={()=>onNavigate("subscription")}>{payments.some(p=>p.status==="pending")?"পেমেন্ট যাচাই হচ্ছে":"প্যাকেজ দেখুন"} →</button></section>
   <footer className="dk-footer">DokanKhata · বাংলাদেশের দোকানদারদের ডিজিটাল সহকারী</footer>
