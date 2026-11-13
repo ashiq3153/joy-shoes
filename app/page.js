@@ -288,6 +288,7 @@ export default function Home() {
       await writeAudit("suppliers", saved.id, "insert", supplierForm);
       setSupplierForm({ owner_name: "", shop_name: "", phone: "", address: "", location_text: "", opening_balance: "0", notes: "" });
       setSupplierPhoto(null);
+      setActive("suppliers");
       return photoWarning;
     }, "✅ মহাজনের তথ্য সংরক্ষণ হয়েছে।");
   }
