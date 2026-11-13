@@ -1,13 +1,14 @@
 "use client";
 import {useState} from "react";
 import {APP_NAV} from "../../lib/dokankhata/constants";
+import DokanKhataLogo from "../brand/DokanKhataLogo";
 export default function DashboardShell({shop,shops,activeShopId,onSwitchShop,profile,view,onNavigate,onSignOut,children}){
  const [menuOpen,setMenuOpen]=useState(false);
  const choose=next=>{setMenuOpen(false);onNavigate(next);};
  return <div className="dk-app-shell">
   <header className="dk-app-header">
    <button className="dk-hamburger" aria-label="দোকান মেনু খুলুন" aria-expanded={menuOpen} onClick={()=>setMenuOpen(open=>!open)}><span/><span/><span/></button>
-   <div className="dk-header-brand"><span className="dk-header-brand-icon">▤</span><b>দোকানখাতা</b></div>
+   <div className="dk-header-brand"><DokanKhataLogo size={42}/><b>দোকানখাতা</b></div>
    <div className="dk-header-profile"><span className="dk-header-status-dot"/><button className="dk-avatar-button" onClick={()=>onNavigate("profile")} aria-label="প্রোফাইল খুলুন">{profile?.display_name?.slice(0,1)||"◉"}</button></div>
   </header>
   {menuOpen?<div className="dk-mobile-menu-layer">
