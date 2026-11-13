@@ -17,7 +17,7 @@
 | app/page.js | Thin root route; renders the app controller |
 | app/workspace/page.js | Preserved legacy accounting workspace |
 | app/admin/page.js | Explicit placeholder until secure admin phase |
-| src/components/AppClient.jsx | Auth/session orchestration and shop state |
+| src/components/AppClient.jsx | Auth/session orchestration and shop state; calls atomic shop onboarding RPC; guards async active-shop refresh races |
 | src/components/auth/ | Login and registration UI |
 | src/components/onboarding/ | Shop category and profile onboarding |
 | src/components/dashboard/ | Dashboard home, shell and navigation |
@@ -35,6 +35,7 @@
 - Prefer explicit component props over global mutable state.
 - Put database operations in the app controller initially; extract feature services as the number of modules grows.
 - Every new tenant-owned row must include shop_id and owner_id. created_by identifies the authenticated actor.
+- Shop creation must use `public.create_shop_with_trial` so shop, owner membership and trial are inserted atomically under SECURITY INVOKER and RLS.
 - Read the current shop_id from validated application state; RLS is the final authorization boundary.
 - Keep money values numeric in PostgreSQL. Format only at the UI boundary.
 - Store timestamps as timestamptz; use Asia/Dhaka for business-date presentation.
@@ -66,4 +67,4 @@ The secret/service-role key must remain server-side only. No new environment var
 - Run Supabase security and performance advisors after DDL.
 - Check Vercel production deployment state before announcing release.
 - Validate registration/login, shop creation, shop switching, sale, expense, product CRUD, image upload and payment request.
-- Test RLS with two distinct authenticated users and at least two shops before declaring tenant isolation complete.
+- Test RLS with two distinct authenticated users and at least two shops before declaring tenant isolation complete. Current smoke test covered shop visibility and cross-user invisibility for shop_sales/shop_expenses; repeat for every new table after schema changes.
