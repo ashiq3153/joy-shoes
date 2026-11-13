@@ -652,3 +652,335 @@ button:focus-visible { outline: 3px solid rgba(25,148,91,.35); outline-offset: 3
  .dk-section-heading h2{font-size:21px}
  .dk-mobile-menu-layer{top:66px}
 }
+
+
+/* =========================================================
+   DOKANKHATA — REFERENCE UI SYSTEM / MOBILE FIRST
+   Visual-only layer: preserves existing routes and data logic.
+   ========================================================= */
+:root{
+ --dk-bg:#f1f7f3;--dk-ink:#183729;--dk-muted:#788a7e;--dk-line:#e0ebe4;
+ --dk-green:#087b4c;--dk-green-dark:#075238;--dk-green-soft:#e7f7ed;
+ --dk-card-shadow:0 8px 24px rgba(18,65,40,.075);
+ --dk-radius-xl:26px;--dk-radius-lg:19px;--dk-radius-md:14px;
+}
+html{background:var(--dk-bg)}body{font-family:"Noto Sans Bengali","Hind Siliguri",Arial,sans-serif;letter-spacing:0;color:var(--dk-ink)}
+button,input,select,textarea{font-family:inherit}button{-webkit-tap-highlight-color:transparent}
+.dk-eyebrow{font-size:11px!important;letter-spacing:1.2px!important;font-weight:950!important;color:#0d8a53!important}
+.dk-primary-button,.dk-secondary-button{min-height:58px;border-radius:16px;font-size:16px;font-weight:900;box-shadow:0 9px 20px rgba(8,123,76,.18)}
+.dk-field{gap:9px;color:#2d4939;font-size:13px;font-weight:850}
+.dk-field input,.dk-field select,.dk-field textarea{min-height:54px;border:1.5px solid #dce8df;border-radius:15px;padding:13px 15px;background:#fbfdfb;color:#193729;font-size:15px;font-weight:650}
+.dk-field input::placeholder,.dk-field textarea::placeholder{color:#a0aea4;font-weight:500}
+.dk-field input:focus,.dk-field select:focus,.dk-field textarea:focus{border-color:#14965d;box-shadow:0 0 0 4px rgba(13,146,87,.11)}
+.dk-panel{padding:22px;border-radius:var(--dk-radius-xl);border-color:#e6eee8;box-shadow:var(--dk-card-shadow)}
+.dk-panel h2{font-size:20px}.dk-section-heading h2{font-size:21px}.dk-section-heading small{font-size:10px}
+
+/* Welcome / first-open experience */
+.dk-welcome-screen{display:flex;flex-direction:column;min-height:100svh;max-width:560px;margin:0 auto;padding:0;background:#f6faf7;overflow:hidden}
+.dk-welcome-art{position:relative;isolation:isolate;display:flex;flex:1;min-height:560px;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:54px 25px 95px;border-radius:0 0 42px 42px;color:#fff;text-align:center;background:radial-gradient(circle at 50% 28%,#139963 0,#087849 47%,#064931 100%)}
+.dk-welcome-art:before{content:"";position:absolute;z-index:-1;left:-30%;bottom:-22%;width:160%;height:44%;border-radius:50% 50% 0 0;background:linear-gradient(135deg,#d8f6e5,#f4fff7);transform:rotate(-5deg)}
+.dk-welcome-art:after{content:"";position:absolute;z-index:-1;left:-24%;bottom:-28%;width:150%;height:37%;border-radius:50% 50% 0 0;background:rgba(255,255,255,.27);transform:rotate(5deg)}
+.dk-welcome-glow{position:absolute;z-index:-1;border:1px solid rgba(255,255,255,.12);border-radius:50%;background:rgba(255,255,255,.035)}
+.dk-glow-a{width:360px;height:360px;top:-150px;right:-160px}.dk-glow-b{width:290px;height:290px;bottom:80px;left:-170px}
+.dk-welcome-logo{display:grid;place-items:center;width:110px;height:110px;border:1.5px solid rgba(255,255,255,.52);border-radius:30px;color:#fff;background:rgba(255,255,255,.13);box-shadow:0 17px 38px rgba(0,35,20,.18)}
+.dk-brand-mark-svg{width:76px;height:76px;display:block}
+.dk-welcome-brand{margin-top:18px;font-size:clamp(35px,9vw,48px);font-weight:1000;letter-spacing:-1.3px;line-height:1.15}
+.dk-welcome-art h1{margin:15px 0 8px;font-size:clamp(23px,6vw,29px);font-weight:950;line-height:1.55}
+.dk-welcome-art>p{max-width:360px;margin:0;color:#dbf5e6;font-size:14px;font-weight:600;line-height:1.9}
+.dk-welcome-benefits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%;max-width:420px;margin-top:27px}
+.dk-welcome-benefits>div{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 6px;border:1px solid rgba(255,255,255,.18);border-radius:17px;background:rgba(255,255,255,.09)}
+.dk-welcome-benefits span{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;color:#f7fff9;background:rgba(255,255,255,.14);font-size:21px;font-weight:900}
+.dk-welcome-benefits b{font-size:12px;font-weight:900}.dk-welcome-benefits small{color:#ccebd8;font-size:9px;line-height:1.5}
+.dk-welcome-wave{position:absolute;z-index:-1;left:-20%;bottom:-47px;width:140%;height:115px;border-radius:50%;background:rgba(255,255,255,.42)}
+.dk-welcome-bottom{display:flex;flex-direction:column;align-items:center;gap:10px;padding:15px 24px 28px;text-align:center}
+.dk-welcome-dots{display:flex;justify-content:center;gap:8px;margin:0 0 5px}
+.dk-welcome-dots i{width:8px;height:8px;border-radius:50%;background:#c0d1c6}.dk-welcome-dots i.active{width:22px;border-radius:99px;background:#0b804d}
+.dk-welcome-bottom>div:nth-child(2) small{color:#82948a;font-size:10px;font-weight:800}
+.dk-welcome-bottom h2{margin:3px 0 0;color:#1c3b2b;font-size:19px;font-weight:950}
+.dk-welcome-start{display:flex;align-items:center;justify-content:center;gap:15px;width:100%;max-width:420px;min-height:58px;margin-top:5px;border:0;border-radius:16px;color:#fff;background:linear-gradient(110deg,#0a9857,#087247);box-shadow:0 10px 22px rgba(7,120,72,.2);font-size:17px;font-weight:950}
+.dk-welcome-start span{font-size:24px}.dk-welcome-signup{padding:5px 12px;border:0;color:#087849;background:transparent;font-size:13px;font-weight:850}
+
+/* Login and account creation */
+.dk-auth-flow{display:grid;grid-template-columns:minmax(0,1fr) minmax(390px,500px);gap:clamp(24px,5vw,72px);align-items:center;min-height:100svh;max-width:1240px;margin:auto;padding:34px clamp(18px,5vw,70px)}
+.dk-auth-visual{position:relative;isolation:isolate;display:flex;align-items:center;min-height:600px;overflow:hidden;padding:55px;border-radius:36px;color:#fff;background:linear-gradient(145deg,#06452f,#087b4d 58%,#15925d);box-shadow:0 24px 60px rgba(6,85,52,.18)}
+.dk-auth-visual:after{content:"";position:absolute;z-index:-1;right:-140px;bottom:-190px;width:440px;height:440px;border:1px solid rgba(255,255,255,.16);border-radius:50%;background:rgba(255,255,255,.055)}
+.dk-auth-visual-content{max-width:460px}
+.dk-auth-mini-logo{display:grid;place-items:center;width:77px;height:77px;border:1px solid rgba(255,255,255,.4);border-radius:22px;background:rgba(255,255,255,.12)}
+.dk-auth-mini-logo .dk-brand-mark-svg{width:59px;height:59px}
+.dk-auth-visual-content>b{display:block;margin-top:14px;font-size:33px;font-weight:1000}
+.dk-auth-visual h1{margin:14px 0 9px;font-size:34px;font-weight:950;line-height:1.5}
+.dk-auth-visual p{max-width:420px;color:#d8f1e1;font-size:15px;line-height:1.95}
+.dk-auth-visual-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.dk-auth-visual-pills span{padding:10px 13px;border:1px solid rgba(255,255,255,.2);border-radius:99px;background:rgba(255,255,255,.1);font-size:12px;font-weight:850}
+.dk-auth-back{position:absolute;top:22px;left:22px;display:none;width:42px;height:42px;border:1px solid rgba(255,255,255,.3);border-radius:13px;color:#fff;background:rgba(255,255,255,.12);font-size:23px}
+.dk-auth-card{width:100%;max-width:500px;padding:34px;border:1px solid #e5eee7;border-radius:28px;background:#fff;box-shadow:0 16px 44px rgba(17,67,39,.09)}
+.dk-auth-card-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dk-auth-step{color:#9aa99f;font-size:10px;font-weight:900;letter-spacing:1px}
+.dk-auth-heading-icon{display:grid;place-items:center;width:54px;height:54px;margin-top:22px;border-radius:17px;background:#e9f7ee;font-size:26px}
+.dk-auth-card h2{margin:13px 0 6px;color:#173a28;font-size:25px;font-weight:950;line-height:1.5}
+.dk-auth-card>p{margin:0 0 21px;color:#7e8f84;font-size:13px;line-height:1.8}
+.dk-auth-form{gap:15px}
+.dk-input-with-icon{display:flex;align-items:center;gap:9px;min-height:56px;padding:0 13px;border:1.5px solid #dce8df;border-radius:15px;background:#fbfdfb}
+.dk-input-with-icon:focus-within{border-color:#12945a;box-shadow:0 0 0 4px rgba(13,146,87,.1)}
+.dk-input-with-icon>i{width:23px;flex:none;color:#72887a;font-size:19px;font-style:normal;text-align:center}
+.dk-input-with-icon input{width:100%;min-width:0;min-height:52px;padding:10px 0;border:0;outline:0;color:#193729;background:transparent;font-size:15px;font-weight:650;box-shadow:none!important}
+.dk-input-with-icon input:focus{border:0;box-shadow:none}
+.dk-input-with-icon>button{width:34px;height:34px;flex:none;border:0;border-radius:10px;color:#789082;background:#edf5ef;font-size:18px}
+.dk-auth-submit{margin-top:7px;min-height:59px;font-size:16px}
+.dk-auth-divider{display:flex;align-items:center;gap:13px;margin:21px 0 13px;color:#9aa79f;font-size:11px}
+.dk-auth-divider:before,.dk-auth-divider:after{content:"";height:1px;flex:1;background:#e7eee8}
+.dk-auth-switch{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;color:#77877d;font-size:12px;text-align:center}
+.dk-auth-switch button{padding:0;border:0;color:#087a49;background:transparent;font-size:12px;font-weight:950}
+.dk-auth-footnote{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:22px;padding:12px 9px;border-radius:13px;color:#6b7e71;background:#f2f8f3;font-size:10px;font-weight:800;text-align:center}
+.dk-auth-footnote span{color:#0a9958;font-size:16px}
+.dk-notice,.dk-error{margin-top:14px;padding:13px 14px;border-radius:13px;font-size:12px;line-height:1.7}
+.dk-notice{border:1px solid #c8ecd4;color:#176a42;background:#effaf2}.dk-error{border:1px solid #f5d1d6;color:#a42e40;background:#fff2f3}
+
+/* Shop onboarding */
+.dk-setup-page{min-height:100svh;padding:22px 16px 48px;background:radial-gradient(circle at 50% 0,#e5f7eb 0,transparent 330px),#f3f8f4}
+.dk-setup-top{max-width:700px;margin:0 auto 22px}
+.dk-brand-mini{display:flex;align-items:center;gap:8px;color:#075e3c;font-size:19px;font-weight:1000}
+.dk-brand-mini>span{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;color:#fff;background:linear-gradient(140deg,#0b9055,#075b3a);font-size:19px}
+.dk-setup-back{padding:10px 13px;border:1px solid #d8e7dd;border-radius:12px;color:#087849;background:#fff;font-size:12px;font-weight:850}
+.dk-setup-progress{max-width:620px;margin:0 auto 17px}
+.dk-setup-step-dots{display:flex;gap:8px;flex:1}
+.dk-setup-step-dots i{height:6px;flex:1;border-radius:99px;background:#dbe9df}.dk-setup-step-dots i.active{background:#0b9659}
+.dk-setup-progress>span{color:#829188;font-size:11px;font-weight:900;white-space:nowrap}
+.dk-setup-card{max-width:620px;margin:0 auto;padding:30px;border:1px solid #e4eee6;border-radius:28px;background:#fff;box-shadow:0 16px 46px rgba(17,67,39,.08)}
+.dk-setup-hero-icon{display:grid;place-items:center;width:64px;height:64px;margin-bottom:17px;border-radius:19px;background:#eaf7ee;font-size:33px}
+.dk-setup-card h1{margin:9px 0 6px;color:#193d2a;font-size:28px;font-weight:950;line-height:1.5}
+.dk-setup-card>p{margin:0;color:#819087;font-size:13px;line-height:1.8}
+.dk-category-grid{gap:13px;margin:24px 0}
+.dk-category-card{min-height:148px;padding:19px;border:1.5px solid #e3ece5;border-radius:19px;box-shadow:0 7px 18px rgba(17,65,39,.06);transition:border-color .15s,background .15s,transform .15s}
+.dk-category-card:active{transform:scale(.985)}
+.dk-category-card>span{display:grid;place-items:center;width:54px;height:54px;border-radius:16px;background:#f1f7f2;font-size:32px}
+.dk-category-card b{margin-top:3px;font-size:15px;font-weight:950}.dk-category-card small{font-size:11px;line-height:1.6}
+.dk-category-card.selected{border:2px solid #0b985b;background:#f0faf4;box-shadow:0 0 0 4px rgba(11,152,91,.09)}
+.dk-category-card em{width:25px;height:25px;right:13px;top:13px;font-size:14px}
+.dk-setup-next{min-height:60px}
+.dk-setup-media-preview{margin:22px 0 19px}
+.dk-setup-cover-preview{position:relative;display:flex;align-items:center;justify-content:center;min-height:160px;overflow:hidden;border-radius:19px;color:#fff;background:linear-gradient(135deg,#0b6f47,#12965d);background-size:cover;background-position:center}
+.dk-setup-cover-preview>div{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
+.dk-setup-cover-preview>div>span{font-size:30px}.dk-setup-cover-preview>div b{font-size:14px}.dk-setup-cover-preview>div small{color:#d4f2df;font-size:10px}
+.dk-camera-upload{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid rgba(255,255,255,.5);border-radius:12px;color:#fff;background:rgba(0,55,34,.58);font-size:11px;font-weight:900;cursor:pointer}
+.dk-camera-upload input{display:none}.dk-camera-upload span{font-size:16px}
+.dk-setup-cover-preview>.dk-camera-upload{position:absolute;right:12px;bottom:12px}
+.dk-setup-logo-row{display:flex;align-items:center;gap:13px;margin-top:-22px;padding:0 14px;position:relative}
+.dk-setup-logo-preview{position:relative;display:grid;place-items:center;width:76px;height:76px;flex:none;overflow:hidden;border:4px solid #fff;border-radius:50%;color:#0a7849;background:#e4f6e9;box-shadow:0 3px 12px rgba(0,0,0,.13);font-size:27px;font-weight:950}
+.dk-setup-logo-preview img{width:100%;height:100%;object-fit:cover}
+.dk-setup-logo-preview label{position:absolute;right:-1px;bottom:0;display:grid;place-items:center;width:26px;height:26px;border:2px solid #fff;border-radius:50%;color:#fff;background:#07894f;font-size:12px}
+.dk-setup-logo-preview label input{display:none}
+.dk-setup-logo-row>div:last-child{display:flex;flex-direction:column;gap:3px;padding-top:18px}
+.dk-setup-logo-row b{color:#264531;font-size:12px}.dk-setup-logo-row small{color:#91a096;font-size:10px}
+.dk-setup-form{gap:14px;margin-top:20px}.dk-back-step{margin-top:13px;font-size:12px}
+
+/* App chrome / dashboard */
+.dk-app-shell{background:var(--dk-bg)}
+.dk-app-header{min-height:70px;padding:0 max(20px,calc((100% - 1320px)/2));gap:17px;background:linear-gradient(105deg,#064b33,#078452);box-shadow:0 5px 21px rgba(0,65,37,.16)}
+.dk-hamburger{display:flex;flex-direction:column;justify-content:center;gap:5px;width:40px;height:42px;padding:7px;border:0;border-radius:12px;color:#fff;background:rgba(255,255,255,.1)}
+.dk-hamburger span{display:block;width:24px;height:2.5px;border-radius:5px;background:#fff}
+.dk-header-brand{gap:10px;font-size:20px}
+.dk-header-brand-icon{display:grid;place-items:center;width:35px;height:35px;border:1px solid rgba(255,255,255,.25);border-radius:11px;color:#fff;background:rgba(255,255,255,.12);font-size:21px}
+.dk-header-brand b{font-size:20px;font-weight:1000}
+.dk-header-shop-name{margin-left:auto;color:#d7f3e2;font-size:13px;font-weight:850}
+.dk-header-profile{display:flex;align-items:center;gap:12px;margin-left:4px}
+.dk-header-status-dot{width:8px;height:8px;border-radius:50%;background:#8ff2b6;box-shadow:0 0 0 5px rgba(255,255,255,.1)}
+.dk-avatar-button{display:grid;place-items:center;width:46px;height:46px;border:2px solid rgba(255,255,255,.5);border-radius:50%;color:#087448;background:#effbf2;font-size:18px;font-weight:950}
+.dk-main-layout{grid-template-columns:250px minmax(0,1fr);gap:25px;max-width:1340px;padding:27px 24px 70px}
+.dk-sidebar{top:88px;padding:19px;border-radius:22px;box-shadow:var(--dk-card-shadow)}
+.dk-sidebar-shop>span{width:53px;height:53px;border-radius:16px;font-size:21px}
+.dk-sidebar-shop b{font-size:14px}.dk-sidebar nav{gap:8px;margin-top:13px}
+.dk-sidebar nav button{min-height:50px;border-radius:14px;font-size:13px}
+.dk-sidebar nav button span{width:25px;font-size:22px}
+.dk-new-shop-button{min-height:48px;margin:17px 0;padding:10px;border-radius:13px;font-size:13px;font-weight:900}
+.dk-main-area{max-width:1040px;margin:0 auto}
+.dk-mobile-welcome{gap:12px;margin:0 3px 20px}
+.dk-mobile-welcome>div{display:flex;flex-direction:column;gap:4px}
+.dk-mobile-welcome>div small{color:#8b9b90;font-size:9px;font-weight:950;letter-spacing:1.4px}
+.dk-mobile-welcome>div span{color:#20422f;font-size:17px;font-weight:950}
+.dk-mobile-welcome button{min-height:42px;padding:9px 14px;border-radius:13px;font-size:12px}
+.dk-dashboard-content{max-width:1040px}
+.dk-shop-banner{min-height:190px;margin-bottom:20px;padding:25px 28px;gap:22px;border-radius:26px;background:linear-gradient(115deg,#06452f,#078955);box-shadow:0 15px 31px rgba(7,83,50,.16)}
+.dk-shop-brand{width:96px;height:96px;border:4px solid rgba(255,255,255,.8);font-size:40px;box-shadow:0 8px 21px rgba(0,0,0,.14)}
+.dk-shop-banner-copy small{font-size:14px}
+.dk-shop-banner-copy h1{margin:6px 0;font-size:30px;font-weight:1000;line-height:1.35}
+.dk-shop-banner-copy p{font-size:13px;line-height:1.7}
+.dk-shop-category-tag{display:inline-flex;margin-top:8px;padding:6px 10px;border:1px solid rgba(255,255,255,.24);border-radius:99px;color:#d8f3e2;background:rgba(255,255,255,.1);font-size:10px;font-weight:850}
+.dk-banner-edit{display:grid;place-items:center;width:46px;height:46px;flex:none;border:1px solid rgba(255,255,255,.5);border-radius:50%;color:#08754a;background:#fff;font-size:21px;box-shadow:0 5px 13px rgba(0,0,0,.13)}
+.dk-date-line{display:flex;align-items:center;gap:13px;margin:21px 3px 20px;color:#234330;font-size:15px;font-weight:900}
+.dk-date-line>span{display:grid;place-items:center;width:43px;height:43px;border-radius:13px;color:#0a8652;background:#e2f5e8;font-size:23px}
+.dk-date-line>div{display:flex;flex-direction:column;gap:3px}.dk-date-line small{color:#8a9a90;font-size:10px;font-weight:800}.dk-date-line b{font-size:15px;font-weight:950}
+.dk-shop-switcher{display:flex;align-items:center;gap:10px;margin:0 0 18px;padding:12px 14px;border:1px solid var(--dk-line);border-radius:14px;background:#fff}
+.dk-shop-switcher span{color:#657a6b;font-size:12px;font-weight:850}
+.dk-shop-switcher select{min-height:38px;padding:7px 10px;border:1px solid #dce8df;border-radius:10px;color:#20402e;background:#f7fbf8;font-size:12px}
+.dk-shop-switcher button{margin-left:auto;padding:9px 12px;border:0;border-radius:10px;color:#fff;background:#0a8953;font-size:11px;font-weight:900}
+.dk-stats-grid{gap:12px;margin-bottom:16px}
+.dk-stat-card{min-height:126px;padding:16px;border-radius:19px;gap:8px;box-shadow:0 6px 16px rgba(15,69,40,.055)}
+.dk-stat-top{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.dk-stat-card span{font-size:12px;font-weight:900;line-height:1.5}
+.dk-stat-top i{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:rgba(255,255,255,.7);font-size:14px;font-style:normal;font-weight:950}
+.dk-stat-card b{font-size:clamp(18px,2.4vw,25px);font-weight:1000;line-height:1.25;overflow-wrap:anywhere}
+.dk-stat-card small{font-size:10px;line-height:1.5;font-weight:700}
+.dk-quick-actions{gap:13px;margin:16px 0 29px}
+.dk-quick-actions button{min-height:79px;gap:13px;border-radius:19px;font-size:16px;font-weight:950}
+.dk-quick-actions button span{width:37px;height:37px;font-size:29px}
+.dk-dashboard-section-heading{margin:0 1px 16px}
+.dk-section-heading h2{font-size:22px;font-weight:950}.dk-section-heading small{font-size:10px;letter-spacing:1.4px}
+.dk-module-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:24px}
+.dk-module-card{position:relative;min-height:145px;gap:9px;padding:17px;border-radius:20px;box-shadow:0 7px 19px rgba(16,64,39,.07);transition:transform .15s,box-shadow .15s}
+.dk-module-card:active{transform:scale(.98)}
+.dk-module-card b{font-size:14px;font-weight:950;line-height:1.55}
+.dk-module-card small{font-size:10px;line-height:1.45}
+.dk-module-card>i{position:absolute;right:14px;top:14px;color:#a3b4a8;font-size:17px;font-style:normal}
+.dk-module-icon{width:51px;height:51px;border-radius:16px;font-size:29px}
+.dk-module-icon.violet{background:#f0eaff}.dk-module-icon.orange{background:#fff1df}.dk-module-icon.blue{background:#e7f2ff}.dk-module-icon.red{background:#fff0f0}.dk-module-icon.cyan{background:#e8f8fb}.dk-module-icon.pink{background:#ffedf8}.dk-module-icon.gold{background:#fff4d7}.dk-module-icon.green{background:#e4f7e9}
+.dk-recent-panel{padding:22px 24px}
+.dk-activity-row,.dk-record{min-height:76px;gap:14px;padding:11px 0}
+.dk-activity-row>span{width:45px;height:45px;border-radius:15px;font-size:23px}
+.dk-activity-row b,.dk-record b{font-size:14px;font-weight:900}
+.dk-activity-row small,.dk-record small{font-size:11px}.dk-activity-row strong{font-size:14px}
+.dk-empty-illustrated{display:flex;flex-direction:column;align-items:center;gap:5px;padding:34px 12px}
+.dk-empty-illustrated>span{display:grid;place-items:center;width:58px;height:58px;border-radius:18px;background:#eff7f1;font-size:30px}
+.dk-empty-illustrated b{margin-top:5px;color:#405948;font-size:14px}.dk-empty-illustrated small{color:#92a096;font-size:11px}
+.dk-subscription-strip{grid-template-columns:minmax(0,1fr) auto auto;gap:20px;margin:21px 0;padding:20px 23px;border-radius:20px;box-shadow:0 7px 18px rgba(102,77,20,.07)}
+.dk-subscription-strip>div:first-child>span{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:#fff0c8;font-size:27px}
+.dk-subscription-strip b{font-size:15px}.dk-subscription-strip small{font-size:11px}
+.dk-subscription-price b{font-size:25px}
+.dk-subscription-strip>button{min-height:43px;padding:11px 15px;border-radius:12px;font-size:12px}
+.dk-footer{padding:25px 0 12px;font-size:11px}
+
+/* Drawer, directory and navigation controls */
+.dk-mobile-menu-layer{top:70px;z-index:60}
+.dk-mobile-menu{width:min(88vw,380px);padding:20px 17px calc(25px + env(safe-area-inset-bottom));border-radius:0 23px 0 0}
+.dk-mobile-menu-head b{font-size:18px}.dk-mobile-menu>button{min-height:72px;gap:13px}
+.dk-mobile-menu>button>span{width:46px;height:46px;border-radius:15px;font-size:23px}
+.dk-mobile-menu>button b{font-size:15px}.dk-mobile-menu>button small{font-size:11px}
+.dk-bottom-nav{padding:9px 9px calc(9px + env(safe-area-inset-bottom));box-shadow:0 -7px 22px rgba(23,63,39,.05)}
+.dk-bottom-nav button{min-height:56px;gap:4px;border-radius:14px}
+.dk-bottom-nav button span{font-size:25px;font-weight:900}.dk-bottom-nav button small{font-size:11px;font-weight:900}
+
+/* Shop profile: banner, overlapping brand and grouped forms */
+.dk-profile-hero{overflow:hidden;margin-bottom:17px;border:1px solid #e4eee6;border-radius:24px;background:#fff;box-shadow:var(--dk-card-shadow)}
+.dk-profile-cover{position:relative;display:flex;align-items:flex-start;justify-content:flex-end;flex-direction:column;min-height:185px;padding:18px 20px;color:#fff;background:linear-gradient(130deg,#07543a,#0b9259);background-size:cover;background-position:center}
+.dk-profile-cover-caption{display:flex;flex-direction:column;gap:4px;text-shadow:0 2px 7px rgba(0,0,0,.2)}
+.dk-profile-cover-caption span{font-size:17px;font-weight:950}.dk-profile-cover-caption small{color:#e2f7e9;font-size:11px}
+.dk-profile-cover-upload{position:absolute;right:13px;top:13px}
+.dk-profile-identity{display:flex;align-items:center;gap:14px;padding:0 20px 19px}
+.dk-profile-logo{position:relative;display:grid;place-items:center;width:91px;height:91px;flex:none;margin-top:-35px;overflow:hidden;border:5px solid #fff;border-radius:50%;color:#08784a;background:#e5f7e9;box-shadow:0 7px 18px rgba(0,0,0,.13);font-size:34px;font-weight:1000}
+.dk-profile-logo>img{width:100%;height:100%;object-fit:cover}
+.dk-profile-logo label{position:absolute;right:0;bottom:0;display:grid;place-items:center;width:30px;height:30px;border:2px solid #fff;border-radius:50%;color:#fff;background:#078b51;font-size:13px;cursor:pointer}
+.dk-profile-logo label input{display:none}
+.dk-profile-identity-copy{display:flex;flex-direction:column;gap:4px;padding-top:9px}
+.dk-profile-identity-copy>b{color:#193a29;font-size:20px;font-weight:1000}
+.dk-profile-identity-copy>small{color:#0a8752;font-size:12px;font-weight:900}
+.dk-profile-identity-copy>span{color:#95a299;font-size:10px}
+.dk-profile-panel{padding:22px}
+.dk-panel-heading{display:flex;align-items:center;gap:12px;margin-bottom:17px}
+.dk-panel-heading>span{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;color:#087849;background:#e9f7ed;font-size:21px}
+.dk-panel-heading>div{display:flex;flex-direction:column;gap:3px}
+.dk-panel-heading h2{margin:0;font-size:18px}.dk-panel-heading small{color:#91a096;font-size:10px}
+
+/* Transaction forms */
+.dk-transaction-page{max-width:780px}
+.dk-amount-panel{padding:22px}.dk-amount-field>span{font-size:14px}
+.dk-amount-input{display:flex;align-items:center;gap:8px;min-height:78px;padding:5px 16px;border:1.5px solid #dcebe1;border-radius:18px;background:#f8fcf9}
+.dk-amount-input>small{color:#087a49;font-size:24px;font-weight:1000}
+.dk-amount-input input{min-height:65px;border:0;background:transparent;color:#1b402c;font-size:29px;font-weight:1000;box-shadow:none!important}
+.dk-amount-expense{border-color:#f5dce2;background:#fff6f7}.dk-amount-expense>small{color:#d23a53}.dk-amount-expense input{color:#ad2c48}
+.dk-number-pad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:14px 0 20px}
+.dk-number-pad button{min-height:54px;border:1px solid #e3ece5;border-radius:14px;color:#274734;background:#fff;font-size:18px;font-weight:900;box-shadow:0 3px 8px rgba(15,60,36,.04)}
+.dk-number-pad button:active{border-color:#0b9256;background:#eef8f1}
+.dk-sale-form-extra{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.dk-sale-form-extra .dk-field:nth-child(3),.dk-sale-form-extra .dk-field:nth-child(4){grid-column:1/-1}
+.dk-transaction-submit{margin-top:14px}.dk-expense-panel{padding:22px}
+.dk-expense-chooser{margin:3px 0 5px}.dk-expense-chooser>b{display:block;margin-bottom:11px;color:#294836;font-size:13px;font-weight:900}
+.dk-expense-category-list{gap:10px}
+.dk-expense-category-list button{min-height:66px;padding:11px 13px;border-radius:15px;font-size:13px;font-weight:850;box-shadow:0 3px 9px rgba(18,65,40,.035)}
+.dk-expense-category-list button span{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#f0f6f1;font-size:22px}
+.dk-expense-category-list button b{font-size:12px}
+.dk-expense-category-list button.selected{border:1.5px solid #0d9a5e;background:#effaf3}
+.dk-expense-submit{background:linear-gradient(110deg,#e64c60,#c92b43);box-shadow:0 9px 20px rgba(208,50,70,.17)}
+.dk-page-title{gap:15px;margin-bottom:20px}
+.dk-page-title>button:first-child{width:48px;height:48px;border-radius:15px;font-size:24px;box-shadow:0 3px 10px rgba(15,60,36,.04)}
+.dk-page-title small{font-size:10px;letter-spacing:1.2px}
+.dk-page-title h1{font-size:26px;font-weight:950}.dk-page-title p{font-size:12px}
+
+/* Directory and product cards */
+.dk-search-box{min-height:58px;margin:16px 0;padding:0 16px;border-radius:16px;box-shadow:0 3px 12px rgba(15,60,36,.04)}
+.dk-search-box input{height:56px;font-size:14px}.dk-search-box span{font-size:27px}
+.dk-supplier-card,.dk-employee-row{min-height:91px;gap:14px;padding:13px 0}
+.dk-supplier-mark,.dk-employee-avatar{width:52px;height:52px;border-radius:16px;font-size:23px}
+.dk-supplier-main b,.dk-employee-main b{font-size:15px}
+.dk-supplier-main small,.dk-employee-main small{font-size:11px}
+.dk-supplier-due strong{font-size:15px}.dk-supplier-due small{font-size:10px}
+.dk-product-row{grid-template-columns:53px minmax(0,1fr) auto;gap:13px;padding:15px 0}
+.dk-product-row>span{width:51px;height:51px;border-radius:15px;font-size:26px}
+.dk-product-row b{font-size:14px}.dk-product-row small{font-size:11px}.dk-record b{font-size:14px}
+
+/* Responsive type / spacing */
+@media(min-width:760px){
+ .dk-welcome-screen{min-height:100vh;padding:25px}
+ .dk-welcome-art{min-height:590px;border-radius:38px 38px 28px 28px}
+ .dk-welcome-bottom{padding-bottom:20px}
+ .dk-auth-flow{padding-top:40px;padding-bottom:40px}
+ .dk-main-layout{padding-top:30px}
+}
+@media(max-width:900px){
+ .dk-auth-flow{display:flex;flex-direction:column;justify-content:center;gap:0;max-width:590px;padding:14px 16px 34px}
+ .dk-auth-visual{min-height:205px;width:100%;padding:23px 24px 28px;border-radius:23px 23px 0 0}
+ .dk-auth-visual-content{padding-top:18px}
+ .dk-auth-mini-logo{width:47px;height:47px;border-radius:14px}
+ .dk-auth-mini-logo .dk-brand-mark-svg{width:37px;height:37px}
+ .dk-auth-visual-content>b{display:inline-block;margin:0 0 0 10px;font-size:19px;vertical-align:middle}
+ .dk-auth-visual h1{margin:8px 0 4px;font-size:19px}
+ .dk-auth-visual p{margin:0;font-size:11px;line-height:1.65}
+ .dk-auth-visual-pills{gap:6px;margin-top:10px}
+ .dk-auth-visual-pills span{padding:6px 9px;font-size:9px}
+ .dk-auth-back{display:grid;place-items:center;top:12px;left:12px;width:35px;height:35px}
+ .dk-auth-card{max-width:100%;margin-top:-3px;padding:24px;border-radius:0 0 23px 23px}
+}
+@media(max-width:760px){
+ .dk-app-header{min-height:68px;padding:0 16px;gap:12px}
+ .dk-main-layout{display:block;padding:16px 15px 102px}
+ .dk-sidebar{display:none}
+ .dk-main-area{max-width:100%;padding-bottom:8px}
+ .dk-mobile-welcome{display:flex;align-items:center;justify-content:space-between;margin:0 2px 19px}
+ .dk-dashboard-content{max-width:100%}
+ .dk-shop-banner{min-height:176px;padding:22px 20px;gap:16px;margin-bottom:19px;border-radius:23px}
+ .dk-shop-brand{width:82px;height:82px;font-size:36px}
+ .dk-shop-banner-copy small{font-size:13px}.dk-shop-banner-copy h1{font-size:25px}
+ .dk-shop-banner-copy p{max-width:none;overflow:visible;white-space:normal;font-size:12px}
+ .dk-date-line{margin:20px 3px;font-size:15px}
+ .dk-stat-card{min-height:112px;padding:12px 10px;border-radius:15px;gap:7px}
+ .dk-stat-card span{font-size:10px}.dk-stat-card b{font-size:clamp(16px,4.5vw,21px)}.dk-stat-card small{font-size:9px}
+ .dk-quick-actions button{min-height:72px;font-size:14px}
+ .dk-module-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+ .dk-module-card{min-height:136px;padding:15px;border-radius:17px}
+ .dk-module-card b{font-size:14px}.dk-module-card small{font-size:10px}.dk-module-icon{width:49px;height:49px;font-size:28px}
+ .dk-dashboard-section-heading h2{font-size:21px}.dk-recent-panel{padding:18px}
+ .dk-subscription-strip{grid-template-columns:minmax(0,1fr) auto;gap:11px;padding:16px}
+ .dk-subscription-strip>button{grid-column:1/-1;width:100%;min-height:43px}
+ .dk-mobile-menu-layer{top:68px}
+ .dk-bottom-nav{padding:8px 7px calc(8px + env(safe-area-inset-bottom))}
+ .dk-bottom-nav button{min-height:55px}.dk-bottom-nav button span{font-size:24px}.dk-bottom-nav button small{font-size:10px}
+ .dk-profile-cover{min-height:165px}.dk-profile-logo{width:81px;height:81px}.dk-profile-identity-copy>b{font-size:18px}
+ .dk-setup-card{padding:23px;border-radius:23px}.dk-setup-card h1{font-size:25px}
+ .dk-category-card{min-height:135px;padding:14px}.dk-category-card>span{width:48px;height:48px;font-size:29px}
+ .dk-category-card b{font-size:13px}.dk-category-card small{font-size:10px}
+ .dk-setup-cover-preview{min-height:145px}.dk-number-pad button{min-height:50px}
+ .dk-amount-input{min-height:72px}.dk-amount-input input{font-size:27px}
+ .dk-sale-form-extra{grid-template-columns:1fr}.dk-sale-form-extra .dk-field{grid-column:1/-1}
+}
+@media(max-width:380px){
+ .dk-main-layout{padding-left:11px;padding-right:11px}.dk-app-header{padding:0 12px;gap:9px}
+ .dk-header-brand b{font-size:17px}.dk-header-shop-name{max-width:88px;font-size:10px}.dk-avatar-button{width:40px;height:40px}
+ .dk-stat-card{padding:10px 8px}.dk-stat-top i{width:23px;height:23px}
+ .dk-stat-card span{font-size:9px}.dk-stat-card b{font-size:15px}
+ .dk-quick-actions button{gap:7px;font-size:12px}.dk-quick-actions button span{width:29px;height:29px}
+ .dk-module-card{min-height:128px;padding:12px}.dk-module-card b{font-size:12px}.dk-module-card small{font-size:9px}
+ .dk-module-icon{width:44px;height:44px;font-size:25px}
+ .dk-welcome-art{min-height:525px;padding-left:18px;padding-right:18px}
+ .dk-welcome-logo{width:96px;height:96px}.dk-brand-mark-svg{width:67px;height:67px}
+ .dk-welcome-benefits{gap:6px}.dk-welcome-benefits>div{padding:10px 3px}.dk-welcome-benefits small{font-size:8px}
+ .dk-auth-card{padding:19px}.dk-setup-card{padding:18px}
+}
