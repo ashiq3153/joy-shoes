@@ -116,8 +116,13 @@ export default function AppClient(){
 
  async function uploadImage(shopId,file,kind){
   if(!file)return null;
-  const extension=safeImageFile(file),path=shopId+"/"+kind+"-"+Date.now()+"."+extension;
-  const {error}=await supabase.storage.from("dokankhata-shop-media").upload(path,file,{cacheControl:"3600",contentType:file.type,upsert:false});
+  const userId=session?.user?.id;
+  if(!userId||!shopId)throw new Error("দোকানের ছবি আপলোড করতে লগইন করুন।");
+  const extension=safeImageFile(file);
+  const path=userId+"/"+shopId+"/"+kind+"-"+Date.now()+"."+extension;
+  const {error}=await supabase.storage.from("dokankhata-shop-media").upload(path,file,{
+   cacheControl:"3600",contentType:file.type,upsert:false
+  });
   if(error)throw error;
   const {data:publicData}=supabase.storage.from("dokankhata-shop-media").getPublicUrl(path);
   return publicData.publicUrl;
@@ -136,19 +141,23 @@ export default function AppClient(){
    if(createError)throw createError;
    const {data:created,error:readError}=await supabase.from("shops").select("*").eq("id",createdShopId).single();
    if(readError)throw readError;
-   let updated=created,mediaWarning="";
-   try {
-    const logoUrl=await uploadImage(created.id,payload.logo,"logo");
-    const coverUrl=await uploadImage(created.id,payload.cover,"cover");
-    if(logoUrl||coverUrl){
-     const {data:row,error:updateError}=await supabase.from("shops").update({
-      logo_url:logoUrl||null,cover_url:coverUrl||null
-     }).eq("id",created.id).select("*").single();
-     if(updateError)throw updateError;updated=row;
-    }
-   } catch(mediaError) {
-    mediaWarning=" দোকান তৈরি হয়েছে, তবে ছবি আপলোড হয়নি: "+mediaError.message;
+   let updated=created;
+   const mediaResults=await Promise.all([
+    payload.logo?uploadImage(created.id,payload.logo,"logo").then(url=>({url})).catch(error=>({error})):Promise.resolve({url:null}),
+    payload.cover?uploadImage(created.id,payload.cover,"cover").then(url=>({url})).catch(error=>({error})):Promise.resolve({url:null})
+   ]);
+   const mediaPatch={};
+   if(mediaResults[0].url)mediaPatch.logo_url=mediaResults[0].url;
+   if(mediaResults[1].url)mediaPatch.cover_url=mediaResults[1].url;
+   if(Object.keys(mediaPatch).length){
+    const {data:row,error:updateError}=await supabase.from("shops").update(mediaPatch).eq("id",created.id).eq("owner_id",session.user.id).select("*").single();
+    if(updateError)throw updateError;
+    updated=row;
    }
+   const mediaErrors=mediaResults.filter(result=>result.error);
+   const mediaWarning=mediaErrors.length
+    ?" দোকান তৈরি হয়েছে, তবে "+mediaErrors.length+"টি ছবি আপলোড হয়নি: "+mediaErrors.map(result=>result.error.message).join(" / ")
+    :"";
    setShops(old=>[...old,updated]);setActiveShopId(updated.id);setView("home");
    await refreshShopData(updated.id);setFlash("আপনার নতুন দোকান তৈরি হয়েছে। ৭ দিনের ফ্রি ট্রায়াল শুরু হয়েছে।"+mediaWarning);
   }catch(error){setFlash("দোকান তৈরি হয়নি: "+(error.message||"আবার চেষ্টা করুন"));}
@@ -158,12 +167,20 @@ export default function AppClient(){
  async function saveShop(payload){
   if(!activeShop)return;setBusy(true);setFlash("");
   try{
-   const logoUrl=await uploadImage(activeShop.id,payload.logo,"logo");
-   const coverUrl=await uploadImage(activeShop.id,payload.cover,"cover");
+   const mediaResults=await Promise.all([
+    payload.logo?uploadImage(activeShop.id,payload.logo,"logo").then(url=>({url})).catch(error=>({error})):Promise.resolve({url:null}),
+    payload.cover?uploadImage(activeShop.id,payload.cover,"cover").then(url=>({url})).catch(error=>({error})):Promise.resolve({url:null})
+   ]);
    const patch={name:payload.name,category:payload.category,phone:payload.phone||null,address:payload.address||null,updated_at:new Date().toISOString()};
-   if(logoUrl)patch.logo_url=logoUrl;if(coverUrl)patch.cover_url=coverUrl;
+   if(mediaResults[0].url)patch.logo_url=mediaResults[0].url;
+   if(mediaResults[1].url)patch.cover_url=mediaResults[1].url;
    const {data:updated,error}=await supabase.from("shops").update(patch).eq("id",activeShop.id).eq("owner_id",session.user.id).select("*").single();
-   if(error)throw error;setShops(old=>old.map(s=>s.id===updated.id?updated:s));setFlash("দোকানের প্রোফাইল আপডেট হয়েছে।");
+   if(error)throw error;
+   setShops(old=>old.map(s=>s.id===updated.id?updated:s));
+   const mediaErrors=mediaResults.filter(result=>result.error);
+   setFlash(mediaErrors.length
+    ?"দোকানের তথ্য সংরক্ষণ হয়েছে, তবে "+mediaErrors.length+"টি ছবি আপলোড হয়নি: "+mediaErrors.map(result=>result.error.message).join(" / ")
+    :"দোকানের প্রোফাইল আপডেট হয়েছে।");
   }catch(error){setFlash("প্রোফাইল আপডেট হয়নি: "+(error.message||"আবার চেষ্টা করুন"));}
   finally{setBusy(false);}
  }
