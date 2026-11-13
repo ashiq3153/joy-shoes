@@ -21,7 +21,7 @@
 | src/components/auth/ | Login and registration UI |
 | src/components/onboarding/ | Shop category and profile onboarding |
 | src/components/dashboard/ | Dashboard home, shell and navigation |
-| src/components/modules/ | Sales, expenses and product modules |
+| src/components/modules/ | Sales, expenses, products, suppliers and employee directories |
 | src/components/profile/ | Shop and owner profile |
 | src/components/subscription/ | Trial, plan and manual payment UI |
 | src/lib/dokankhata/ | Product constants and reusable formatters |
@@ -34,7 +34,7 @@
 - Keep each screen in a dedicated component; shared business constants live in src/lib/dokankhata.
 - Prefer explicit component props over global mutable state.
 - Put database operations in the app controller initially; extract feature services as the number of modules grows.
-- Every new tenant-owned row must include shop_id and owner_id. created_by identifies the authenticated actor.
+- Every new tenant-owned row must include shop_id and owner_id. created_by identifies the authenticated actor. The older supplier and employee directory tables now also carry shop_id; their existing owner-only RLS is retained until a future staff-role design is shipped.
 - Shop creation must use `public.create_shop_with_trial` so shop, owner membership and trial are inserted atomically under SECURITY INVOKER and RLS.
 - Read the current shop_id from validated application state; RLS is the final authorization boundary.
 - Keep money values numeric in PostgreSQL. Format only at the UI boundary.
@@ -67,5 +67,5 @@ The secret/service-role key must remain server-side only. No new environment var
 - Run Supabase security and performance advisors after DDL.
 - Check Vercel production deployment state before announcing release.
 - Use docs/testing/TEST_PLAN.md as the source of truth for repeatable functional and tenant-isolation checks.
-- Validate registration/login, shop creation, shop switching, sale, expense, product CRUD, image upload and payment request.
+- Validate registration/login, shop creation, shop switching, sale, expense, product, supplier and employee directory flows, image upload and payment request.
 - Test RLS with two distinct authenticated users and at least two shops before declaring tenant isolation complete. Current smoke test covered cross-user invisibility for shops, shop_sales, shop_expenses and products, plus a rejected cross-owner shop_sales insert. This is not a full security assessment; repeat the complete matrix after schema/policy changes.
