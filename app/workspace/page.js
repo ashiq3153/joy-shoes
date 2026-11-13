@@ -188,19 +188,19 @@ export default function Home() {
     };
   }, [supabase]);
 
-  async function refreshData(userId) {
+  async function refreshData(userId, shopId) {
     setLoadingData(true);
     try {
       const requests = [
         supabase.from("daily_sales").select("*").eq("owner_id", userId).order("sale_date", { ascending: false }).limit(180),
-        supabase.from("suppliers").select("*").eq("owner_id", userId).order("created_at", { ascending: false }),
-        supabase.from("supplier_ledger_view").select("*").eq("owner_id", userId).order("owner_name"),
+        supabase.from("suppliers").select("*").eq("owner_id", userId).eq("shop_id", shopId).order("created_at", { ascending: false }),
+        supabase.from("supplier_ledger_view").select("*").eq("owner_id", userId).eq("shop_id", shopId).order("owner_name"),
         supabase.from("purchases").select("*").eq("owner_id", userId).order("purchase_date", { ascending: false }).limit(100),
         supabase.from("purchase_items").select("*").eq("owner_id", userId).limit(500),
         supabase.from("supplier_payments").select("*").eq("owner_id", userId).order("payment_date", { ascending: false }).limit(100),
         supabase.from("purchase_returns").select("*").eq("owner_id", userId).order("return_date", { ascending: false }).limit(100),
         supabase.from("return_items").select("*").eq("owner_id", userId).limit(300),
-        supabase.from("employees").select("*").eq("owner_id", userId).order("created_at", { ascending: false }),
+        supabase.from("employees").select("*").eq("owner_id", userId).eq("shop_id", shopId).order("created_at", { ascending: false }),
         supabase.from("employee_sales").select("*").eq("owner_id", userId).order("sale_date", { ascending: false }).limit(300),
         supabase.from("expenses").select("*").eq("owner_id", userId).order("expense_date", { ascending: false }).limit(180),
         supabase.from("cash_movements").select("*").eq("owner_id", userId).order("movement_date", { ascending: false }).limit(200),
@@ -240,7 +240,7 @@ export default function Home() {
           });
         }
         if (alive && ownShop) await loadProducts(ownShop.id);
-        if (alive) await refreshData(session.user.id);
+        if (alive) await refreshData(session.user.id, ownShop.id);
       } catch (error) {
         if (alive) setFlash("দোকান বা ডেটা লোড হয়নি: " + (error.message || "আবার চেষ্টা করুন"));
       } finally {
@@ -258,7 +258,7 @@ export default function Home() {
       const warning = await action();
       let refreshWarning = "";
       try {
-        await refreshData(session.user.id);
+        await refreshData(session.user.id, shop?.id);
       } catch (refreshError) {
         refreshWarning = "হিসাব সংরক্ষণ হয়েছে, তবে তালিকা রিফ্রেশ হয়নি। পেজ রিলোড করুন।";
       }
@@ -399,7 +399,7 @@ export default function Home() {
     await runSave(async () => {
       let photoWarning = "";
       const { data: saved, error } = await supabase.from("suppliers").insert({
-        owner_id: session.user.id, ...supplierForm, opening_balance: Number(supplierForm.opening_balance || 0)
+        owner_id: session.user.id, shop_id: shop.id, ...supplierForm, opening_balance: Number(supplierForm.opening_balance || 0)
       }).select("id").single();
       if (error) throw error;
       if (supplierPhoto) {
@@ -489,7 +489,7 @@ export default function Home() {
     event.preventDefault();
     await runSave(async () => {
       const { data: saved, error } = await supabase.from("employees").insert({
-        owner_id: session.user.id, full_name: employeeForm.full_name.trim(),
+        owner_id: session.user.id, shop_id: shop.id, full_name: employeeForm.full_name.trim(),
         phone: employeeForm.phone || null, notes: employeeForm.notes || null
       }).select("id").single();
       if (error) throw error;
