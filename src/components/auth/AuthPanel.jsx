@@ -35,7 +35,6 @@ export default function AuthPanel({onLogin,onSignup,busy,notice,error}){
  </main>;
  return <main className="dk-auth-flow">
   <section className="dk-auth-visual">
-   <button className="dk-auth-back" type="button" onClick={()=>setMode("welcome")} aria-label="পেছনে যান">←</button>
    <div className="dk-auth-visual-content">
     <div className="dk-auth-mini-logo"><BrandMark/></div>
     <b>DokanKhata</b>
