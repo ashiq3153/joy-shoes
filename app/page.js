@@ -16,6 +16,14 @@ const EXPENSE_CATEGORIES = [
   ["household_withdrawal", "নিজের / পরিবারের জন্য তোলা"],
   ["other", "অন্যান্য খরচ"]
 ];
+const SHOP_CATEGORIES = [
+  ["footwear", "জুতা ও ফুটওয়্যার"],
+  ["cosmetics", "কসমেটিকস"],
+  ["grocery", "মুদি দোকান"],
+  ["clothing", "কাপড় ও পোশাক"],
+  ["electronics", "ইলেকট্রনিক্স"],
+  ["other", "অন্যান্য ব্যবসা"]
+];
 const freshLine = () => ({ model_name: "", quantity_pairs: "1", unit_cost: "" });
 const todayBD = () => new Intl.DateTimeFormat("en-CA", {
   timeZone: "Asia/Dhaka", year: "numeric", month: "2-digit", day: "2-digit"
@@ -152,6 +160,16 @@ export default function Home() {
   });
   const [selectedSupplier, setSelectedSupplier] = useState("");
   const [staffPeriod, setStaffPeriod] = useState("month");
+  const [shop, setShop] = useState(null);
+  const [shopLoading, setShopLoading] = useState(true);
+  const [shopForm, setShopForm] = useState({ name: "", category: "footwear", phone: "", address: "" });
+  const [products, setProducts] = useState([]);
+  const [productSearch, setProductSearch] = useState("");
+  const [productForm, setProductForm] = useState({
+    product_name: "", product_code: "", category: "", brand: "", barcode: "",
+    purchase_price: "0", selling_price: "0", stock_qty: "0", low_stock_at: "0", unit: "piece"
+  });
+  const [productLoading, setProductLoading] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -207,12 +225,26 @@ export default function Home() {
     if (!session?.user?.id) return;
     let alive = true;
     (async () => {
+      setShopLoading(true);
       try {
-        const { error } = await supabase.from("owners").upsert({ id: session.user.id }, { onConflict: "id" });
-        if (error) throw error;
+        const { error: ownerError } = await supabase.from("owners").upsert({ id: session.user.id }, { onConflict: "id" });
+        if (ownerError) throw ownerError;
+        const { data: ownShop, error: shopError } = await supabase
+          .from("shops").select("*").eq("owner_id", session.user.id).maybeSingle();
+        if (shopError) throw shopError;
+        if (alive) {
+          setShop(ownShop || null);
+          if (ownShop) setShopForm({
+            name: ownShop.name || "", category: ownShop.category || "other",
+            phone: ownShop.phone || "", address: ownShop.address || ""
+          });
+        }
+        if (alive && ownShop) await loadProducts(ownShop.id);
         if (alive) await refreshData(session.user.id);
       } catch (error) {
-        if (alive) setFlash("ডেটা লোড হয়নি: " + (error.message || "আবার চেষ্টা করুন"));
+        if (alive) setFlash("দোকান বা ডেটা লোড হয়নি: " + (error.message || "আবার চেষ্টা করুন"));
+      } finally {
+        if (alive) setShopLoading(false);
       }
     })();
     return () => { alive = false; };
@@ -253,6 +285,97 @@ export default function Home() {
     setFlash("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  async function loadProducts(shopId) {
+    if (!shopId) return;
+    setProductLoading(true);
+    try {
+      const { data: rows, error } = await supabase
+        .from("products").select("*").eq("shop_id", shopId)
+        .eq("is_active", true).order("product_name").limit(500);
+      if (error) throw error;
+      setProducts(rows || []);
+    } finally {
+      setProductLoading(false);
+    }
+  }
+
+  async function createShop(event) {
+    event.preventDefault();
+    if (shopForm.name.trim().length < 2) return notify("দোকানের নাম কমপক্ষে ২ অক্ষরের লিখুন।");
+    setBusy(true); setFlash("");
+    try {
+      const { data: created, error } = await supabase.from("shops").insert({
+        owner_id: session.user.id, name: shopForm.name.trim(), category: shopForm.category,
+        phone: shopForm.phone.trim() || null, address: shopForm.address.trim() || null
+      }).select("*").single();
+      if (error) throw error;
+      const { error: membershipError } = await supabase.from("shop_memberships").insert({
+        shop_id: created.id, user_id: session.user.id, role: "owner", status: "active"
+      });
+      setShop(created);
+      await loadProducts(created.id);
+      setFlash(membershipError
+        ? "দোকান তৈরি হয়েছে। সদস্যতার রেকর্ডে সমস্যা হয়েছে; মালিক হিসেবে দোকানের ডেটা আপনার অ্যাকাউন্টে সুরক্ষিত আছে।"
+        : "✅ দোকানের প্রোফাইল তৈরি হয়েছে। এখন পণ্য যোগ করতে পারবেন।");
+    } catch (error) {
+      setFlash("দোকান তৈরি হয়নি: " + (error.message || "আবার চেষ্টা করুন"));
+    } finally { setBusy(false); }
+  }
+
+  async function saveShopProfile(event) {
+    event.preventDefault();
+    if (!shop?.id || shopForm.name.trim().length < 2) return notify("দোকানের সঠিক নাম লিখুন।");
+    setBusy(true); setFlash("");
+    try {
+      const { data: updated, error } = await supabase.from("shops").update({
+        name: shopForm.name.trim(), category: shopForm.category,
+        phone: shopForm.phone.trim() || null, address: shopForm.address.trim() || null,
+        updated_at: new Date().toISOString()
+      }).eq("id", shop.id).eq("owner_id", session.user.id).select("*").single();
+      if (error) throw error;
+      setShop(updated);
+      setFlash("✅ দোকানের প্রোফাইল আপডেট হয়েছে।");
+    } catch (error) {
+      setFlash("প্রোফাইল আপডেট হয়নি: " + (error.message || "আবার চেষ্টা করুন"));
+    } finally { setBusy(false); }
+  }
+
+  async function saveProduct(event) {
+    event.preventDefault();
+    if (!shop?.id) return notify("আগে দোকানের প্রোফাইল তৈরি করুন।");
+    if (!productForm.product_name.trim()) return notify("পণ্যের নাম লিখুন।");
+    const numericFields = ["purchase_price", "selling_price", "stock_qty", "low_stock_at"];
+    if (numericFields.some((key) => productForm[key] === "" || !Number.isFinite(Number(productForm[key])) || Number(productForm[key]) < 0)) {
+      return notify("দাম ও স্টকের ঘরে শূন্য বা তার বেশি সঠিক সংখ্যা লিখুন।");
+    }
+    setBusy(true); setFlash("");
+    try {
+      const payload = {
+        shop_id: shop.id,
+        product_name: productForm.product_name.trim(),
+        product_code: productForm.product_code.trim() || null,
+        category: productForm.category.trim() || null,
+        brand: productForm.brand.trim() || null,
+        barcode: productForm.barcode.trim() || null,
+        unit: productForm.unit || "piece",
+        purchase_price: Number(productForm.purchase_price),
+        selling_price: Number(productForm.selling_price),
+        stock_qty: Number(productForm.stock_qty),
+        low_stock_at: Number(productForm.low_stock_at)
+      };
+      const { error } = await supabase.from("products").insert(payload);
+      if (error) throw error;
+      await loadProducts(shop.id);
+      setProductForm({
+        product_name: "", product_code: "", category: "", brand: "", barcode: "",
+        purchase_price: "0", selling_price: "0", stock_qty: "0", low_stock_at: "0", unit: "piece"
+      });
+      setFlash("✅ পণ্য ক্যাটালগে যোগ হয়েছে। এখন নাম, কোড বা বারকোড দিয়ে খুঁজতে পারবেন।");
+    } catch (error) {
+      setFlash("পণ্য যোগ হয়নি: " + (error.message || "আবার চেষ্টা করুন"));
+    } finally { setBusy(false); }
+  }
 
   async function saveSales(event) {
     event.preventDefault();
@@ -458,12 +581,21 @@ export default function Home() {
   if (!authReady) return <main className="shell"><div className="loading-screen">DokanKhata<br />লোড হচ্ছে...</div></main>;
 
   if (!session) return <main className="shell auth-shell">
-    <header className="top"><div className="logo">DK</div><div><small>দোকানের ডিজিটাল হিসাবখাতা</small><h1>DokanKhata</h1></div></header>
+    <header className="top auth-top"><div className="logo">DK</div><div><small>বাংলাদেশের দোকানদারদের ডিজিটাল সহকারী</small><h1>DokanKhata</h1></div></header>
+    <section className="welcome-hero">
+      <div className="welcome-copy">
+        <span className="welcome-kicker">আপনার ব্যবসা, আপনার নিয়ন্ত্রণে</span>
+        <h2>দোকানের হিসাব<br />এখন এক জায়গায়।</h2>
+        <p>বিক্রি, পণ্য, স্টক, মহাজন ও খরচ—সহজ বাংলায় গুছিয়ে রাখুন।</p>
+      </div>
+      <div className="welcome-graphic" aria-hidden="true">৳</div>
+      <div className="welcome-tags"><span>পণ্য সার্চ</span><span>দৈনিক হিসাব</span><span>স্টক তালিকা</span></div>
+    </section>
     <section className="auth-card">
-      <div className="auth-icon">🔐</div>
-      <small>DOKANKHATA ACCOUNT</small>
-      <h2>{isSignup ? "মালিকের অ্যাকাউন্ট তৈরি" : "মালিক লগইন"}</h2>
-      <p>আপনার দোকানের বিক্রি, খরচ ও হিসাব এক জায়গায় রাখুন।</p>
+      <div className="auth-icon">{isSignup ? "＋" : "↗"}</div>
+      <small>{isSignup ? "START YOUR SHOP" : "WELCOME BACK"}</small>
+      <h2>{isSignup ? "নতুন দোকানের অ্যাকাউন্ট" : "দোকান মালিক লগইন"}</h2>
+      <p>{isSignup ? "প্রথমে অ্যাকাউন্ট খুলুন। এরপর দোকানের নাম ও ব্যবসার ধরন দিয়ে প্রোফাইল তৈরি হবে।" : "আপনার দোকানের হিসাবখাতায় প্রবেশ করুন।"}</p>
       <form onSubmit={async (event) => {
         event.preventDefault(); setBusy(true); setFlash("");
         try {
@@ -471,18 +603,41 @@ export default function Home() {
             ? await supabase.auth.signUp({ email: authEmail, password: authPassword, options: { emailRedirectTo: window.location.origin } })
             : await supabase.auth.signInWithPassword({ email: authEmail, password: authPassword });
           if (result.error) throw result.error;
-          if (isSignup && !result.data.session) setFlash("ইমেইলে পাঠানো লিংক খুলে অ্যাকাউন্ট নিশ্চিত করুন, তারপর লগইন করুন।");
-          else setFlash("লগইন সফল হচ্ছে...");
-        } catch (error) { setFlash(error.message || "লগইন করা যায়নি।"); }
+          if (isSignup && !result.data.session) setFlash("ইমেইলে পাঠানো লিংক নিশ্চিত করুন। তারপর লগইন করলে দোকানের প্রোফাইল তৈরির ধাপ আসবে।");
+          else setFlash("অ্যাকাউন্ট যাচাই হচ্ছে...");
+        } catch (error) { setFlash(error.message || "অ্যাকাউন্ট খোলা যায়নি।"); }
         finally { setBusy(false); }
       }}>
         <Field label="ইমেইল" value={authEmail} onChange={setAuthEmail} type="email" placeholder="আপনার ইমেইল" required />
         <Field label="পাসওয়ার্ড" value={authPassword} onChange={setAuthPassword} type="password" placeholder="কমপক্ষে ৬ অক্ষর" required />
-        <button className="primary-btn full-btn" disabled={busy}>{busy ? "অপেক্ষা করুন..." : isSignup ? "অ্যাকাউন্ট তৈরি করুন" : "লগইন করুন"}</button>
+        <button className="primary-btn full-btn" disabled={busy}>{busy ? "অপেক্ষা করুন..." : isSignup ? "নতুন অ্যাকাউন্ট খুলুন" : "লগইন করুন"}</button>
       </form>
       <button className="text-btn" type="button" onClick={() => { setIsSignup(!isSignup); setFlash(""); }}>
-        {isSignup ? "আগে অ্যাকাউন্ট আছে? লগইন করুন" : "নতুন মালিক? অ্যাকাউন্ট তৈরি করুন"}
+        {isSignup ? "আগে অ্যাকাউন্ট আছে? লগইন করুন" : "নতুন দোকান শুরু করুন"}
       </button>
+      {flash ? <p className="notice">{flash}</p> : null}
+    </section>
+    <section className="auth-steps">
+      <div><b>01</b><span>অ্যাকাউন্ট তৈরি</span></div><i>→</i><div><b>02</b><span>দোকান প্রোফাইল</span></div><i>→</i><div><b>03</b><span>হিসাব শুরু</span></div>
+    </section>
+    <footer>DokanKhata · ছোট ব্যবসার সহজ ডিজিটাল হিসাব</footer>
+  </main>;
+
+  if (shopLoading) return <main className="shell"><div className="loading-screen">দোকানের তথ্য<br />লোড হচ্ছে...</div></main>;
+
+  if (!shop) return <main className="shell auth-shell setup-shell">
+    <header className="top"><div className="logo">DK</div><div><small>আপনার প্রথম ধাপ</small><h1>DokanKhata</h1></div></header>
+    <section className="setup-card">
+      <span className="setup-step">SHOP SETUP · 01 / 01</span>
+      <h2>আপনার দোকানের প্রোফাইল তৈরি করুন</h2>
+      <p>দোকানের নাম ও ব্যবসার ধরন দিন। এই প্রোফাইল আপনার দোকানের হিসাবকে আলাদা করে রাখবে।</p>
+      <form onSubmit={createShop}>
+        <Field label="দোকানের নাম" value={shopForm.name} onChange={(v) => setShopForm({ ...shopForm, name: v })} placeholder="যেমন: JOY SHOES" required />
+        <SelectField label="ব্যবসার ধরন" value={shopForm.category} onChange={(v) => setShopForm({ ...shopForm, category: v })} options={SHOP_CATEGORIES} />
+        <Field label="মোবাইল নম্বর (ঐচ্ছিক)" value={shopForm.phone} onChange={(v) => setShopForm({ ...shopForm, phone: v })} type="tel" placeholder="01XXXXXXXXX" />
+        <TextArea label="দোকানের ঠিকানা (ঐচ্ছিক)" value={shopForm.address} onChange={(v) => setShopForm({ ...shopForm, address: v })} placeholder="এলাকা, বাজার, জেলা" />
+        <button className="primary-btn full-btn" disabled={busy}>{busy ? "প্রোফাইল তৈরি হচ্ছে..." : "দোকানের প্রোফাইল তৈরি করুন"}</button>
+      </form>
       {flash ? <p className="notice">{flash}</p> : null}
     </section>
     <footer>DokanKhata · আপনার দোকানের ডিজিটাল হিসাবখাতা</footer>
@@ -490,6 +645,8 @@ export default function Home() {
 
   const moduleCards = [
     ["🛍️", "আজকের বিক্রি", "দৈনিক বিক্রির হিসাব", "sales", "green"],
+    ["🔎", "পণ্য ও সার্চ", "পণ্যের দাম, কোড ও স্টক খুঁজুন", "products", "purple"],
+    ["🏪", "দোকান প্রোফাইল", "দোকানের নাম ও যোগাযোগের তথ্য", "profile", "blue"],
     ["👥", "মহাজন", "মহাজন ও বাকি হিসাব", "suppliers", "blue"],
     ["📦", "নতুন মাল কেনা", "ক্রয়, আইটেম ও ক্যাশ মেমো", "purchases", "purple"],
     ["💸", "খরচ", "দোকান ও পারিবারিক খরচ", "expenses", "yellow"],
@@ -500,7 +657,7 @@ export default function Home() {
   return <main className="shell app-shell">
     <header className="top app-top">
       <div className="logo">DK</div>
-      <div className="brand-title"><small>DokanKhata · দোকানের হিসাব</small><h1>JOY SHOES</h1></div>
+      <div className="brand-title"><small>DokanKhata · {SHOP_CATEGORIES.find(([key]) => key === shop.category)?.[1] || "দোকানের হিসাব"}</small><h1>{shop.name}</h1></div>
       <button className="logout-btn" onClick={signOut}>↪ বের হন</button>
     </header>
 
@@ -525,6 +682,8 @@ export default function Home() {
         </button>)}
       </section>
       <section className="quick-extra">
+        <button onClick={() => go("products")}>🔎 পণ্য সার্চ করুন</button>
+        <button onClick={() => go("profile")}>🏪 দোকান প্রোফাইল</button>
         <button onClick={() => go("payments")}>💳 মহাজনকে টাকা দিন</button>
         <button onClick={() => go("returns")}>↩ মাল ফেরত দিন</button>
         <button onClick={() => go("reports")}>📊 লাভ-লোকসান রিপোর্ট</button>
@@ -534,6 +693,56 @@ export default function Home() {
         {data.sales.slice(0, 5).length ? <div className="record-list">{data.sales.slice(0, 5).map((row) => <div className="record-row" key={row.id}>
           <div><b>{dateText(row.sale_date)}</b><small>{row.entry_mode === "cost_and_sale" ? "আসলসহ হিসাব" : "শুধু মোট বিক্রি"}</small></div><strong>{money(row.total_sales)}</strong>
         </div>)}</div> : <Empty>এখনো বিক্রির হিসাব নেই। “আজকের বিক্রি” থেকে শুরু করুন।</Empty>}
+      </section>
+    </> : null}
+
+    {active === "products" ? <>
+      <PageHead eyebrow="PRODUCT CATALOG" title="পণ্য যোগ করুন ও সার্চ করুন" subtitle="পণ্যের নাম, কোড, বারকোড বা ব্র্যান্ড লিখে দ্রুত খুঁজে নিন।" onBack={() => go("dashboard")} />
+      <section className="panel">
+        <div className="panel-title"><div><small>ADD NEW ITEM</small><h2>নতুন পণ্য যোগ করুন</h2></div></div>
+        <form onSubmit={saveProduct}>
+          <Field label="পণ্যের নাম" value={productForm.product_name} onChange={(v) => setProductForm({ ...productForm, product_name: v })} placeholder="যেমন: Men’s Casual Shoe" required />
+          <div className="form-grid-two">
+            <Field label="পণ্য কোড / SKU" value={productForm.product_code} onChange={(v) => setProductForm({ ...productForm, product_code: v })} placeholder="যেমন: SH-001" />
+            <Field label="বারকোড" value={productForm.barcode} onChange={(v) => setProductForm({ ...productForm, barcode: v })} placeholder="বারকোড (ঐচ্ছিক)" />
+            <Field label="ক্যাটাগরি" value={productForm.category} onChange={(v) => setProductForm({ ...productForm, category: v })} placeholder="যেমন: স্যান্ডেল" />
+            <Field label="ব্র্যান্ড" value={productForm.brand} onChange={(v) => setProductForm({ ...productForm, brand: v })} placeholder="ব্র্যান্ডের নাম" />
+            <Field label="ক্রয় মূল্য" type="number" min="0" step="0.01" value={productForm.purchase_price} onChange={(v) => setProductForm({ ...productForm, purchase_price: v })} required />
+            <Field label="বিক্রয় মূল্য" type="number" min="0" step="0.01" value={productForm.selling_price} onChange={(v) => setProductForm({ ...productForm, selling_price: v })} required />
+            <Field label="বর্তমান স্টক" type="number" min="0" step="0.001" value={productForm.stock_qty} onChange={(v) => setProductForm({ ...productForm, stock_qty: v })} required />
+            <Field label="কম স্টকের সতর্কতা" type="number" min="0" step="0.001" value={productForm.low_stock_at} onChange={(v) => setProductForm({ ...productForm, low_stock_at: v })} />
+          </div>
+          <button className="primary-btn full-btn" disabled={busy}>{busy ? "সংরক্ষণ হচ্ছে..." : "＋ পণ্য ক্যাটালগে যোগ করুন"}</button>
+        </form>
+      </section>
+      <section className="panel">
+        <div className="panel-title"><div><small>SEARCH YOUR ITEMS</small><h2>পণ্য খুঁজুন</h2></div><span>{products.length} টি পণ্য</span></div>
+        <Field label="নাম, কোড, বারকোড বা ব্র্যান্ড" value={productSearch} onChange={setProductSearch} placeholder="পণ্য লিখে সার্চ করুন..." />
+        {productLoading ? <div className="loading-strip">পণ্যের তালিকা লোড হচ্ছে...</div> : null}
+        {products.filter((p) => [p.product_name,p.product_code,p.barcode,p.brand,p.category].some((v) => String(v || "").toLowerCase().includes(productSearch.trim().toLowerCase()))).length
+          ? <div className="product-list">{products.filter((p) => [p.product_name,p.product_code,p.barcode,p.brand,p.category].some((v) => String(v || "").toLowerCase().includes(productSearch.trim().toLowerCase()))).map((p) => <article className="product-row" key={p.id}>
+              <div className="product-mark">▦</div>
+              <div className="product-info"><b>{p.product_name}</b><small>{[p.product_code,p.brand,p.category].filter(Boolean).join(" · ") || "কোনো কোড বা ব্র্যান্ড নেই"}</small><span>স্টক: {Number(p.stock_qty).toLocaleString("bn-BD")} {p.unit === "piece" ? "টি" : p.unit}</span></div>
+              <div className="product-prices"><strong>{money(p.selling_price)}</strong><small>ক্রয় {money(p.purchase_price)}</small></div>
+            </article>)}</div>
+          : <Empty>{productSearch ? "এই নামে কোনো পণ্য পাওয়া যায়নি। বানান বা কোড বদলে খুঁজুন।" : "এখনো পণ্য যোগ করা হয়নি। উপরের ফর্ম থেকে প্রথম পণ্যটি যোগ করুন।"}</Empty>}
+      </section>
+    </> : null}
+
+    {active === "profile" ? <>
+      <PageHead eyebrow="SHOP PROFILE" title="দোকানের প্রোফাইল" subtitle="আপনার দোকানের পরিচিতি ও যোগাযোগের তথ্য হালনাগাদ করুন।" onBack={() => go("dashboard")} />
+      <section className="shop-profile-banner">
+        <div className="shop-profile-avatar">{shop.name.slice(0,1).toUpperCase()}</div>
+        <div><small>আপনার দোকান</small><h2>{shop.name}</h2><span>{SHOP_CATEGORIES.find(([key]) => key === shop.category)?.[1] || "অন্যান্য ব্যবসা"}</span></div>
+      </section>
+      <section className="panel">
+        <form onSubmit={saveShopProfile}>
+          <Field label="দোকানের নাম" value={shopForm.name} onChange={(v) => setShopForm({ ...shopForm, name: v })} required />
+          <SelectField label="ব্যবসার ধরন" value={shopForm.category} onChange={(v) => setShopForm({ ...shopForm, category: v })} options={SHOP_CATEGORIES} />
+          <Field label="মোবাইল নম্বর" value={shopForm.phone} onChange={(v) => setShopForm({ ...shopForm, phone: v })} type="tel" placeholder="01XXXXXXXXX" required={false} />
+          <TextArea label="দোকানের ঠিকানা" value={shopForm.address} onChange={(v) => setShopForm({ ...shopForm, address: v })} placeholder="এলাকা, বাজার, জেলা" />
+          <button className="primary-btn full-btn" disabled={busy}>{busy ? "আপডেট হচ্ছে..." : "প্রোফাইল সংরক্ষণ করুন"}</button>
+        </form>
       </section>
     </> : null}
 
