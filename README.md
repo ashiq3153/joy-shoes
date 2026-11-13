@@ -1,47 +1,64 @@
-# DokanKhata
+# DokanKhata — Digital Bookkeeping SaaS
 
-A multi-shop bookkeeping platform for small businesses in Bangladesh.
+DokanKhata is a multi-shop bookkeeping platform for small businesses in Bangladesh. Each shop owner can create multiple independent shops, record daily sales and expenses, manage products and keep a separate subscription for each shop.
 
-## Product direction
-- Platform brand: DokanKhata
-- Initial deployment: Vercel-assigned subdomain
-- Trial plan: 7 days
-- Starter subscription: BDT 200 per shop per month
-- Payments: manual bKash/Nagad verification first; automated gateway later
-- Initial shop categories: footwear, cosmetics, grocery, clothing, electronics, other
-- Existing JOY SHOES account and records must be preserved as the first shop during migration.
+## Commercial model
+- 7-day free trial per shop
+- Starter: ৳200 per shop / month
+- Initial renewal workflow: manual bKash / Nagad payment request and admin verification
+- Payment request remains pending until a trusted admin approves it
 
-## Current production application
-- Existing production URL: https://joy-shoes.vercel.app
-- Repository: https://github.com/ashiq3153/joy-shoes
-- Stack: Next.js, React, Tailwind CSS v4, Supabase PostgreSQL/Auth/Storage, Vercel
+## Product ownership
+DokanKhata is owned and operated by the platform founder / Managing Director. Shop owners are customers using the SaaS. JOY SHOES is the first legacy shop and dataset; it is not the product identity.
 
-## Migration safety requirements
-The current production schema is owner-scoped and contains live JOY SHOES records. Do not drop or rename existing tables during the multi-shop migration.
-Introduce shop tenancy, backfill the current owner's existing records into the first shop, and only then update application queries to use shop membership.
-All exposed tenant-owned tables must have RLS policies validating membership in the same shop. Authorization must not depend on user-editable user_metadata.
-Never expose Supabase service-role or secret keys in browser code.
+## Production / source
+- Production: https://joy-shoes.vercel.app
+- GitHub: https://github.com/ashiq3153/joy-shoes
+- Current stack: Next.js 15, React 19, Supabase Auth/Postgres/Storage, Vercel
 
-## Planned implementation phases
-1. DokanKhata branding and shared design system.
-2. Registration, shop category selection, and shop profile onboarding.
-3. Multi-tenant schema and tested RLS policies, preserving existing JOY SHOES records.
-4. Shop-specific dashboard, settings, banner and profile images.
-5. Additive sales entries, expense quick-entry and unified recent transactions.
-6. Subscription lifecycle: 7-day trial, BDT 200/month, manual payment review.
-7. Super Admin dashboard, followed by automated payment integration.
-8. Data isolation, regression, mobile/PWA and production deployment tests.
+## Start locally
+1. Install Node.js LTS.
+2. Clone this repository.
+3. Install dependencies with npm install.
+4. Configure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in .env.local.
+5. Run npm run dev and open http://localhost:3000.
 
-## Existing modules
-- Owner email/password authentication
-- Sales, suppliers, purchases, supplier payments and purchase returns
-- Employees and employee sales allocation
-- Expenses, cash movements, daily closings and reports
+Never place a Supabase service-role or secret key in a NEXT_PUBLIC environment variable or client-side source.
 
-## Accounting rules
-- Employee sales are currently a breakdown of daily sales; they must not be double-counted.
-- Supplier payments reduce supplier outstanding; they are not operating expenses.
-- A credit-adjustment return reduces supplier outstanding.
-- A cash-refund return is cash received; it does not reduce supplier outstanding a second time.
-- Household withdrawals are owner draws, not business operating expenses.
+## Code map
+- app/page.js — thin route adapter
+- src/components/AppClient.jsx — session and active-shop orchestration
+- src/components/auth/ — authentication
+- src/components/onboarding/ — category selection and shop profile setup
+- src/components/dashboard/ — dashboard home and responsive shell
+- src/components/modules/ — sale, expense and product screens
+- src/components/profile/ — shop and owner profile settings
+- src/components/subscription/ — 7-day trial and manual payment request
+- app/workspace/page.js — preserved legacy accounting application
+- app/admin/page.js — placeholder only; Super Admin panel is not implemented
+- supabase/migrations/ — database changes
+- docs/ — product, business, technical, data and AI handoff documentation
+
+## Current implementation boundary
+The new customer-facing experience uses shop-scoped tables: shop_sales, shop_expenses, products, subscriptions and subscription_payments. The original JOY SHOES accounting tables and rows are preserved at /workspace. Those legacy suppliers, purchases, employees, cash closing, reporting views and RPC functions still require a planned shop_id migration. Until this migration is complete, do not assume the entire accounting suite is multi-tenant.
+
+The new dashboard does not silently combine legacy owner-scoped totals with new shop-specific records. This avoids double-counting and accidental cross-shop totals.
+
+## Core documents
+- docs/product/BRD.md — business requirements and commercial model
+- docs/product/PRD.md — user journeys and product requirements
+- docs/technical/TRD.md — stack and engineering requirements
+- docs/data/DRD.md — database design and legacy migration boundary
+- docs/architecture/ARCHITECTURE.md — application and tenant architecture
+- docs/roadmap/FEATURE_STATUS.md — live, partial and planned features
+- docs/AI_HANDOFF.md — instructions for future AI/developer contributors
+
+## Accounting principles
+- Employee sales are attribution, not additional sales.
+- Supplier payments reduce supplier balance; they are not operating expenses.
+- Owner withdrawals are not business expenses.
+- Missing product cost must not be represented as zero profit.
 - Cash balance and accounting profit are different measures.
+
+## Before shipping a change
+Review docs/AI_HANDOFF.md, inspect current Supabase schema and RLS, make additive migrations, test with separate users, run Supabase advisors, and verify the Vercel production deployment.
