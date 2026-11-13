@@ -1,6 +1,6 @@
 # Data Requirements & Database Design (DRD)
 
-**Version:** 1.1 · **Status:** SaaS core deployed; supplier and employee directories shop-scoped; accounting ledger migration pending
+**Version:** 1.2 · **Status:** SaaS core deployed; supplier/employee directories shop-scoped; demo ledger cleared; full legacy ledger migration pending
 
 ## 1. Tenancy model
 - Auth identity: auth.users.id.
@@ -62,14 +62,17 @@ id, shop_id, owner_id, subscription_id, amount (exactly ৳২০০), payment_m
 - shop_sales and shop_expenses: shop owner or active membership; created_by must match auth.uid() on insert/update.
 - subscriptions: owner reads; user may create only starter/trialing subscription within a seven-day window; no client-side activation/update policy.
 - subscription_payments: owner reads and submits fixed ৳২০০ pending requests; no client-side approval.
-- Storage: insert/delete scoped to first path segment matching shop UUID and owner/member authorization.
+- Storage: public shop-media bucket permits downloads; insert/delete policies require path `<auth-user-uuid>/<shop-uuid>/...` and verify shop ownership or active membership. Uploads use unique paths with upsert disabled. Real browser upload verification is still pending.
 
-## 5. Legacy tables not yet migrated
+## 5. JOY SHOES demo cleanup
+On 13 November 2026 the explicitly identified demo transactions for the legacy JOY SHOES shop were removed: daily_sales, suppliers, supplier_payments, employees, employee_sales, expenses, daily_closings, cash_movements, audit_logs and shop-scoped operational rows. Counts were verified at zero afterwards. The JOY SHOES shop, owner account/profile, owner membership and subscription/trial remain intact. An older supplier photo object in the private legacy storage bucket was not deleted as part of the SQL cleanup; it is now an unreferenced storage object and remains private.
+
+## 6. Legacy tables not yet migrated
 Remaining legacy accounting tables such as daily_sales, purchases, purchase_items, supplier_payments, purchase_returns, return_items, cash_memos, employee_sales, expenses, cash_movements, daily_closings and audit_logs still primarily use owner_id. The suppliers and employees directory tables now have shop_id; supplier_ledger_view has shop_id appended and is SECURITY INVOKER.
 
 Do not drop, rename, rewrite, or combine these tables blindly. Remaining tables need shop_id backfills, RPC changes, view redesign and shop-aware RLS. Supplier purchases/payments/returns, employee-sales attribution, cash flows and daily closing remain in the legacy workspace at /workspace and are available only from the primary/legacy shop entry in the new UI.
 
-## 6. Migration rules
+## 7. Migration rules
 1. Add columns/tables before changing application reads.
 2. Backfill each historical row to the correct shop using verified owner-to-shop mapping.
 3. Verify counts and accounting totals before/after.
