@@ -104,6 +104,16 @@ export default function AppClient(){
   finally{setBusy(false);}
  }
 
+ async function forgotPassword({email}){
+  setBusy(true);setAuthError("");setNotice("");
+  try{
+   const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+"/reset-password"});
+   if(error)throw error;
+   setNotice("পাসওয়ার্ড পরিবর্তনের লিংক আপনার ইমেইলে পাঠানো হয়েছে।");
+  }catch(error){setAuthError(error.message||"পুনরুদ্ধারের লিংক পাঠানো যায়নি।");}
+  finally{setBusy(false);}
+ }
+
  async function signup({name,phone,email,password}){
   setBusy(true);setAuthError("");setNotice("");
   try{
@@ -271,7 +281,7 @@ export default function AppClient(){
  }
 
  if(!authReady||(!session&&loading))return <div className="dk-loading"><span className="dk-spinner"/><b>DokanKhata</b><small>নিরাপদে প্রস্তুত হচ্ছে…</small></div>;
- if(!session)return <AuthPanel onLogin={login} onSignup={signup} busy={busy} notice={notice} error={authError}/>;
+ if(!session)return <AuthPanel onLogin={login} onSignup={signup} onForgotPassword={forgotPassword} busy={busy} notice={notice} error={authError}/>;
  if(loading&&!shops.length)return <div className="dk-loading"><span className="dk-spinner"/><b>দোকানের তথ্য লোড হচ্ছে…</b></div>;
  if(authError&&!shops.length)return <div className="dk-blocking-error">{authError}<button onClick={()=>window.location.reload()}>আবার চেষ্টা করুন</button></div>;
  if(!shops.length)return <ShopSetupWizard onCreate={createShop} busy={busy}/>;
