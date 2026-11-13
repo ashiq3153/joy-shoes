@@ -285,21 +285,21 @@ export default function AppClient(){
  if(loading&&!shops.length)return <div className="dk-loading"><span className="dk-spinner"/><b>দোকানের তথ্য লোড হচ্ছে…</b></div>;
  if(authError&&!shops.length)return <div className="dk-blocking-error">{authError}<button onClick={()=>window.location.reload()}>আবার চেষ্টা করুন</button></div>;
  if(!shops.length)return <ShopSetupWizard onCreate={createShop} busy={busy}/>;
- if(view==="new-shop")return <ShopSetupWizard onCreate={createShop} onCancel={()=>setView("home")} busy={busy}/>;
+ if(view==="new-shop")return <ShopSetupWizard onCreate={createShop} onCancel={()=>setView("profile")} busy={busy}/>;
 
  let content;
- if(view==="home")content=<DashboardHome shop={activeShop} profile={profile} sales={data.sales} expenses={data.expenses} products={data.products} subscription={data.subscription} payments={data.payments} onNavigate={navigate} onNewShop={()=>setView("new-shop")} onSwitchShop={setActiveShopId} shops={shops} activeShopId={activeShopId}/>;
+ if(view==="home")content=<DashboardHome shop={activeShop} profile={profile} sales={data.sales} expenses={data.expenses} products={data.products} subscription={data.subscription} payments={data.payments} onNavigate={navigate} onSwitchShop={setActiveShopId} shops={shops} activeShopId={activeShopId}/>;
  else if(view==="sales")content=<SalesPage shop={activeShop} rows={data.sales} employees={data.employees} onSave={saveSale} busy={busy} onBack={()=>setView("home")}/>;
  else if(view==="expenses")content=<ExpensesPage shop={activeShop} rows={data.expenses} onSave={saveExpense} busy={busy} onBack={()=>setView("home")}/>;
  else if(view==="products")content=<ProductsPage shop={activeShop} rows={data.products} onSave={saveProduct} busy={busy} onBack={()=>setView("home")}/>;
  else if(view==="suppliers")content=<SuppliersPage shop={activeShop} rows={data.suppliers} ledger={data.supplierLedger} onSave={saveSupplier} busy={busy} onBack={()=>setView("home")}/>;
  else if(view==="employees")content=<EmployeesPage shop={activeShop} rows={data.employees} onSave={saveEmployee} busy={busy} onBack={()=>setView("home")}/>;
- else if(view==="profile")content=<ShopProfilePage shop={activeShop} profile={profile} onSaveShop={saveShop} onSaveProfile={saveOwnerProfile} busy={busy} onBack={()=>setView("home")}/>;
+ else if(view==="profile")content=<ShopProfilePage shop={activeShop} profile={profile} onSaveShop={saveShop} onSaveProfile={saveOwnerProfile} onNewShop={()=>setView("new-shop")} busy={busy} onBack={()=>setView("home")}/>;
  else if(view==="subscription")content=<SubscriptionPage shop={activeShop} subscription={data.subscription} payments={data.payments} onSubmitPayment={submitPayment} busy={busy} onBack={()=>setView("home")}/>;
- else if(view==="reports")content=<section className="dk-module-page"><div className="dk-page-title"><button onClick={()=>setView("home")}>←</button><div><small>SHOP REPORT</small><h1>দোকানের রিপোর্ট</h1><p>বর্তমান দোকানের নতুন হিসাব থেকে রিপোর্ট</p></div></div><div className="dk-panel"><h2>সারাংশ</h2><div className="dk-report-lines"><p>মোট বিক্রি <b>{data.sales.reduce((n,x)=>n+Number(x.amount||0),0).toLocaleString("bn-BD")} টাকা</b></p><p>মোট খরচ <b>{data.expenses.reduce((n,x)=>n+Number(x.amount||0),0).toLocaleString("bn-BD")} টাকা</b></p><p>পণ্য <b>{data.products.length} টি</b></p></div><small className="dk-muted">এটি নতুন দোকানভিত্তিক এন্ট্রির সারাংশ। পুরোনো হিসাবের সম্পূর্ণ মাইগ্রেশন এখনো বাকি।</small></div></section>;
+ else if(view==="reports")content=<section className="dk-module-page"><div className="dk-page-title"><button onClick={()=>setView("home")}>←</button><div><small>দোকানের রিপোর্ট</small><h1>দোকানের রিপোর্ট</h1><p>বর্তমান দোকানের নতুন হিসাব থেকে রিপোর্ট</p></div></div><div className="dk-panel"><h2>সারাংশ</h2><div className="dk-report-lines"><p>মোট বিক্রি <b>{data.sales.reduce((n,x)=>n+Number(x.amount||0),0).toLocaleString("bn-BD")} টাকা</b></p><p>মোট খরচ <b>{data.expenses.reduce((n,x)=>n+Number(x.amount||0),0).toLocaleString("bn-BD")} টাকা</b></p><p>পণ্য <b>{data.products.length} টি</b></p></div><small className="dk-muted">এটি নতুন দোকানভিত্তিক এন্ট্রির সারাংশ। পুরোনো হিসাবের সম্পূর্ণ মাইগ্রেশন এখনো বাকি।</small></div></section>;
  else content=<section className="dk-module-page"><div className="dk-panel"><h2>এই স্ক্রিনটি পাওয়া যায়নি</h2><p className="dk-muted">হোমে ফিরে প্রয়োজনীয় মডিউল খুলুন।</p><button className="dk-primary-button" onClick={()=>setView("home")}>হোমে ফিরে যান</button></div></section>;
 
- return <DashboardShell shop={activeShop} shops={shops} activeShopId={activeShopId} onSwitchShop={id=>{setActiveShopId(id);setView("home");}} profile={profile} view={view} onNavigate={navigate} onNewShop={()=>setView("new-shop")} onSignOut={signOut}>
+ return <DashboardShell shop={activeShop} shops={shops} activeShopId={activeShopId} onSwitchShop={id=>{setActiveShopId(id);setView("home");}} profile={profile} view={view} onNavigate={navigate} onSignOut={signOut}>
   {flash?<div className="dk-flash" role="status">{flash}<button onClick={()=>setFlash("")}>×</button></div>:null}
   {content}{busy?<div className="dk-saving"><span className="dk-spinner"/> সংরক্ষণ হচ্ছে…</div>:null}
  </DashboardShell>;
