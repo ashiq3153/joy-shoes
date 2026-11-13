@@ -5,7 +5,8 @@ DokanKhata is a multi-shop bookkeeping platform for small businesses in Banglade
 ## Commercial model
 - 7-day free trial per shop
 - Starter: ৳200 per shop / month
-- Initial renewal workflow: manual bKash / Nagad payment request and admin verification
+- Planned renewal workflow: manual bKash / Nagad payment request and admin verification
+- Payment submit UI is currently held until official receiver details and a protected admin review flow are ready; do not send money to any unconfigured number
 - Payment request remains pending until a trusted admin approves it
 
 ## Product ownership
