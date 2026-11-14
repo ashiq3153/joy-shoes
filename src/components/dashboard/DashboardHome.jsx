@@ -26,7 +26,7 @@ export default function DashboardHome({shop,sales,expenses,products,subscription
  const days=subscription?.trial_ends_at?Math.max(0,Math.ceil((new Date(subscription.trial_ends_at)-Date.now())/86400000)):null;
  const trialCaption=subscription?.status==="active"?"আপনার সাবস্ক্রিপশন সক্রিয়":days===null?"ট্রায়ালের তথ্য পাওয়া যায়নি":days>0?"আর "+days.toLocaleString("bn-BD")+" দিন বিনামূল্যে ব্যবহার করুন":"ট্রায়াল শেষ—নবায়ন প্রয়োজন";
  return <div className="dk-dashboard-content">
-  <section className="dk-shop-banner" style={shop.cover_url?{backgroundImage:"linear-gradient(90deg,rgba(0,35,24,.88) 0%,rgba(0,49,32,.69) 46%,rgba(0,40,28,.12) 100%),linear-gradient(0deg,rgba(0,34,24,.24),transparent 62%),url("+shop.cover_url+")"}:undefined}>
+  <section className="dk-shop-banner" style={shop.cover_url?{backgroundImage:"url("+shop.cover_url+")"}:undefined}>
    <div className="dk-shop-banner-copy">
     <small>আপনার দোকান</small>
     <h1>{shop.name} <span className="dk-shop-category-emoji" aria-label={categoryName}>{categoryIcon}</span></h1>
