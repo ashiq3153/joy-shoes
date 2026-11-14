@@ -4,11 +4,11 @@ import {daysRemaining,dateTimeBn} from "../../lib/dokankhata/format";
 
 export default function SubscriptionPage({shop,subscription,payments,onBack}){
  const remaining=subscription?.status==="active"?null:daysRemaining(subscription?.trial_ends_at);
- return <section className="dk-module-page"><div className="dk-page-title"><button onClick={onBack}>←</button><div><small>PLAN & BILLING</small><h1>সাবস্ক্রিপশন</h1><p>{shop.name} · প্রতি দোকানের জন্য আলাদা প্যাকেজ</p></div></div>
-  <div className="dk-plan-hero"><div className="dk-plan-crown">♛</div><span className="dk-eyebrow">DOKANKHATA STARTER</span><h2>আপনার দোকানের সব হিসাব<br/>এক জায়গায়</h2><div className="dk-plan-price">৳২০০ <small>/ দোকান / মাস</small></div>
+ return <section className="dk-module-page"><div className="dk-page-title"><button onClick={onBack}>←</button><div><small>প্যাকেজ ও পেমেন্ট</small><h1>সাবস্ক্রিপশন</h1><p>{shop.name} · প্রতি দোকানের জন্য আলাদা প্যাকেজ</p></div></div>
+  <div className="dk-plan-hero"><div className="dk-plan-crown">♛</div><span className="dk-eyebrow">দোকানখাতা স্টার্টার</span><h2>আপনার দোকানের সব হিসাব<br/>এক জায়গায়</h2><div className="dk-plan-price">৳২০০ <small>/ দোকান / মাস</small></div>
    {subscription?.status==="active"?<div className="dk-plan-status active">সাবস্ক্রিপশন সক্রিয়</div>:remaining>0?<div className="dk-plan-status">ফ্রি ট্রায়াল চলছে · আর {remaining} দিন</div>:<div className="dk-plan-status expired">ট্রায়াল শেষ · নবায়ন প্রয়োজন</div>}
   </div>
-  <div className="dk-panel"><div className="dk-section-heading"><div><small>INCLUDED FEATURES</small><h2>Starter প্যাকেজে যা পাবেন</h2></div></div>
+  <div className="dk-panel"><div className="dk-section-heading"><div><small>প্যাকেজে যা আছে</small><h2>স্টার্টার প্যাকেজে যা পাবেন</h2></div></div>
    <div className="dk-feature-list">{STARTER_PLAN.features.map(x=><div key={x}><span>✓</span>{x}</div>)}</div>
    <div className="dk-trial-note">প্রথম ৭ দিন সব ফিচার বিনামূল্যে ব্যবহার করুন। এরপর ৳২০০ / মাস / দোকান। একাধিক দোকান থাকলে প্রতিটি দোকানের সাবস্ক্রিপশন আলাদা হবে।</div>
   </div>
