@@ -38,7 +38,7 @@ export default function SuppliersPage({shop,rows,ledger,onSave,busy,onBack}){
  return <section className="dk-module-page">
   <div className="dk-page-title">
    <button onClick={onBack}>←</button>
-   <div><small>SUPPLIER DIRECTORY</small><h1>মহাজন ও সরবরাহকারী</h1><p>{shop.name} · শুধু এই দোকানের তালিকা</p></div>
+   <div><small>মহাজন ব্যবস্থাপনা</small><h1>মহাজন ও সরবরাহকারী</h1><p>{shop.name} · শুধু এই দোকানের তালিকা</p></div>
    <button className="dk-add-round" onClick={()=>setShowForm(value=>!value)}>＋</button>
   </div>
   <div className="dk-stats-grid">
@@ -61,7 +61,7 @@ export default function SuppliersPage({shop,rows,ledger,onSave,busy,onBack}){
   </div>:null}
   <div className="dk-search-box"><span>⌕</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="নাম, দোকান বা মোবাইল দিয়ে খুঁজুন…"/></div>
   <div className="dk-panel">
-   <div className="dk-section-heading"><div><small>THIS SHOP ONLY</small><h2>মহাজনের তালিকা</h2></div><b>{filtered.length} জন</b></div>
+   <div className="dk-section-heading"><div><small>এই দোকানের হিসাব</small><h2>মহাজনের তালিকা</h2></div><b>{filtered.length} জন</b></div>
    {filtered.length?<div className="dk-record-list">{filtered.map(row=>{
     const item=balances.get(row.id);
     const due=Number(item?.outstanding_balance??row.opening_balance??0);
