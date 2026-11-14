@@ -21,7 +21,7 @@ export default function EmployeesPage({shop,rows,onSave,busy,onBack}){
  return <section className="dk-module-page">
   <div className="dk-page-title">
    <button onClick={onBack}>←</button>
-   <div><small>EMPLOYEE DIRECTORY</small><h1>কর্মচারী</h1><p>{shop.name} · এই দোকানের কর্মী তালিকা</p></div>
+   <div><small>কর্মচারী ব্যবস্থাপনা</small><h1>কর্মচারী</h1><p>{shop.name} · এই দোকানের কর্মী তালিকা</p></div>
    <button className="dk-add-round" onClick={()=>setShowForm(value=>!value)}>＋</button>
   </div>
   <div className="dk-stats-grid">
@@ -40,7 +40,7 @@ export default function EmployeesPage({shop,rows,onSave,busy,onBack}){
   </div>:null}
   <div className="dk-search-box"><span>⌕</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="নাম বা মোবাইল দিয়ে খুঁজুন…"/></div>
   <div className="dk-panel">
-   <div className="dk-section-heading"><div><small>THIS SHOP ONLY</small><h2>কর্মচারী তালিকা</h2></div><b>{filtered.length} জন</b></div>
+   <div className="dk-section-heading"><div><small>এই দোকানের তালিকা</small><h2>কর্মচারী তালিকা</h2></div><b>{filtered.length} জন</b></div>
    {filtered.length?<div className="dk-record-list">{filtered.map(row=><article className="dk-employee-row" key={row.id}>
     <div className="dk-employee-avatar">{(row.full_name||"ক").trim().slice(0,1)}</div>
     <div className="dk-employee-main"><b>{row.full_name}</b><small>{row.phone||"মোবাইল নম্বর দেওয়া হয়নি"}</small>{row.notes?<small>{row.notes}</small>:null}</div>
