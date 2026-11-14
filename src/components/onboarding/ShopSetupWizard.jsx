@@ -9,15 +9,15 @@ export default function ShopSetupWizard({onCreate,onCancel,busy,initialName=""})
   else{if(coverPreview)URL.revokeObjectURL(coverPreview);setCover(file);setCoverPreview(file?URL.createObjectURL(file):"");}
  };
  return <main className="dk-setup-page">
-  <div className="dk-setup-top"><span className="dk-brand-mini"><span>▤</span> DokanKhata</span>{onCancel?<button className="dk-setup-back" onClick={onCancel}>← ফিরে যান</button>:null}</div>
+  <div className="dk-setup-top"><span className="dk-brand-mini"><span>▤</span> দোকানখাতা</span>{onCancel?<button className="dk-setup-back" onClick={onCancel}>← ফিরে যান</button>:null}</div>
   <div className="dk-setup-progress"><div className="dk-setup-step-dots"><i className="active"/><i className={step===2?"active":""}/></div><span>ধাপ {step} / ২</span></div>
   {step===1?<section className="dk-setup-card">
-   <div className="dk-setup-hero-icon">🏪</div><span className="dk-eyebrow">SHOP SETUP · 01</span>
-   <h1>আপনার দোকানের ধরন<br/>নির্বাচন করুন</h1><p>আপনার ব্যবসার ধরন অনুযায়ী DokanKhata সাজিয়ে দেওয়া হবে।</p>
+   <div className="dk-setup-hero-icon">🏪</div><span className="dk-eyebrow">দোকানের ধরন · ধাপ ১</span>
+   <h1>আপনার দোকানের ধরন<br/>নির্বাচন করুন</h1><p>আপনার ব্যবসার ধরন অনুযায়ী দোকানখাতা সাজিয়ে দেওয়া হবে।</p>
    <div className="dk-category-grid">{SHOP_CATEGORIES.map(item=><button key={item.id} type="button" className={"dk-category-card "+(category===item.id?"selected":"")} onClick={()=>setCategory(item.id)}><span>{item.icon}</span><b>{item.title}</b><small>{item.description}</small>{category===item.id?<em>✓</em>:null}</button>)}</div>
    <button className="dk-primary-button dk-setup-next" onClick={()=>setStep(2)}>এগিয়ে যান <span>→</span></button>
   </section>:<section className="dk-setup-card">
-   <div className="dk-setup-hero-icon">📝</div><span className="dk-eyebrow">SHOP SETUP · 02</span>
+   <div className="dk-setup-hero-icon">📝</div><span className="dk-eyebrow">দোকানের তথ্য · ধাপ ২</span>
    <h1>আপনার দোকানের<br/>তথ্য দিন</h1><p>দোকানের ছবি ও তথ্য যোগ করুন। পরে প্রোফাইল থেকে পরিবর্তন করতে পারবেন।</p>
    <div className="dk-setup-media-preview">
     <div className="dk-setup-cover-preview" style={coverPreview?{backgroundImage:"linear-gradient(90deg,rgba(0,55,36,.12),rgba(0,55,36,.12)),url("+coverPreview+")"}:undefined}>
