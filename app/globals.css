@@ -1012,7 +1012,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   color:#fff;background:linear-gradient(108deg,#06472f,#087b4d);
   box-shadow:0 3px 14px rgba(5,64,39,.12)
 }
-.dk-hamburger{display:flex;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;padding:7px;border:0;border-radius:12px;color:#fff;background:rgba(255,255,255,.12)}
+.dk-hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;padding:7px;border:0;border-radius:12px;color:#fff;background:rgba(255,255,255,.12)}
 .dk-hamburger span{display:block;width:23px;height:2px;border-radius:5px;background:#fff}
 .dk-header-brand{display:flex;align-items:center;gap:9px;min-width:0;color:#fff;font-size:19px}
 .dk-header-brand b{font-size:19px;font-weight:950;letter-spacing:0;white-space:nowrap}
@@ -1258,7 +1258,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .dk-setup-step-dots i{height:4px;flex:1;border-radius:8px;background:#dbe7df}
 .dk-setup-step-dots i.active{background:#0a9057}
 .dk-setup-progress>span{margin-left:5px;color:#819087;font-size:10px;font-weight:800}
-.dk-setup-card{max-width:640px;margin:0 auto;padding:18px;border:1px solid var(--dk-line);border-radius:19px;background:#fff;box-shadow:var(--dk-card-shadow)}
+.dk-setup-card{width:100%;max-width:640px;margin:0 auto;padding:18px;border:1px solid var(--dk-line);border-radius:19px;background:#fff;box-shadow:var(--dk-card-shadow)}
 .dk-setup-hero-icon{display:grid;place-items:center;width:43px;height:43px;margin-bottom:8px;border-radius:13px;background:#e5f5eb;font-size:23px}
 .dk-setup-card h1{margin:6px 0;color:var(--dk-ink);font-size:23px;line-height:1.4}
 .dk-setup-card>p{margin:0 0 12px;color:var(--dk-muted);font-size:12px;line-height:1.6}
@@ -1356,6 +1356,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     box-shadow:0 -5px 16px rgba(23,63,39,.06)
   }
   .dk-app-shell{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+  .dk-hamburger{display:flex}
   .dk-bottom-nav button{display:flex;align-items:center;justify-content:center;flex-direction:column;min-width:0;min-height:48px;gap:2px;padding:3px 2px;border:0;border-radius:11px;color:#809086;background:transparent}
   .dk-bottom-nav button.active{color:#087b4b;background:#eaf7ef}
   .dk-bottom-nav button span{font-size:21px;line-height:1.1}
