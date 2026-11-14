@@ -35,21 +35,22 @@ export default function DashboardHome({shop,sales,expenses,products,subscription
    </div>
   </section>
   {shops.length>1?<div className="dk-shop-switcher"><span>বর্তমান দোকান</span><select value={activeShopId} onChange={e=>onSwitchShop(e.target.value)}>{shops.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select></div>:null}
-  <div className="dk-date-line"><span>▣</span><div><small>আজকের হিসাব</small><b>{new Date().toLocaleDateString("bn-BD",{timeZone:"Asia/Dhaka",weekday:"long",day:"numeric",month:"long",year:"numeric"})}</b></div></div>
-  <section className="dk-stats-grid">
+  <div className="dk-date-line"><span>▣</span><div><small>আজকের হিসাব</small><b>{new Date().toLocaleDateString("bn-BD",{timeZone:"Asia/Dhaka",weekday:"long",day:"numeric",month:"long",year:"numeric"})}</b></div>
+   <button type="button" className="dk-balance-visibility" onClick={()=>setBalancesHidden(hidden=>!hidden)} aria-label={balancesHidden?"ব্যালেন্স দেখান":"ব্যালেন্স লুকান"} title={balancesHidden?"ব্যালেন্স দেখান":"ব্যালেন্স লুকান"}>
+    {balancesHidden?<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>:<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.1 3.8M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7c1.2 0 2.3-.3 3.3-.7"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>}
+   </button>
+  </div>
+  <section className="dk-stats-grid" aria-label="আজকের বিক্রি ও খরচ">
    <div className="dk-stat-card green">
-    <div className="dk-stat-top"><span>আজকের বিক্রি</span><i aria-hidden="true">↗</i></div>
+    <div className="dk-stat-top"><span>আজকের বিক্রি</span></div>
     <b className="dk-stat-amount">{balancesHidden?"••••••":money(salesTotal)}</b>
     <small>{todaySales.length.toLocaleString("bn-BD")} টি এন্ট্রি</small>
    </div>
    <div className="dk-stat-card rose">
-    <div className="dk-stat-top"><span>আজকের খরচ</span><i aria-hidden="true">↘</i></div>
+    <div className="dk-stat-top"><span>আজকের খরচ</span></div>
     <b className="dk-stat-amount">{balancesHidden?"••••••":money(expensesTotal)}</b>
     <small>{todayExpenses.length.toLocaleString("bn-BD")} টি এন্ট্রি</small>
    </div>
-   <button type="button" className="dk-balance-visibility" onClick={()=>setBalancesHidden(hidden=>!hidden)} aria-label={balancesHidden?"ব্যালেন্স দেখান":"ব্যালেন্স লুকান"} title={balancesHidden?"ব্যালেন্স দেখান":"ব্যালেন্স লুকান"}>
-    {balancesHidden?<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>:<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.1 3.8M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7c1.2 0 2.3-.3 3.3-.7"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>}
-   </button>
   </section>
   <section className="dk-quick-actions">
    <button className="dk-action-sale" onClick={()=>onNavigate("sales")}><span>＋</span><b>বিক্রি যোগ করুন</b></button>
