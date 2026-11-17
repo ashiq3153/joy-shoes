@@ -1,7 +1,7 @@
 "use client";
 import {useEffect,useState} from "react";
 import {SHOP_CATEGORIES} from "../../lib/dokankhata/constants";
-export default function ShopProfilePage({shop,profile,onSaveShop,onSaveProfile,busy,onBack}){
+export default function ShopProfilePage({shop,profile,onSaveShop,onSaveProfile,onNewShop,busy,onBack}){
  const [name,setName]=useState(shop.name||""),[category,setCategory]=useState(shop.category||"other"),[phone,setPhone]=useState(shop.phone||""),[address,setAddress]=useState(shop.address||""),[cover,setCover]=useState(null),[logo,setLogo]=useState(null),[coverPreview,setCoverPreview]=useState(""),[logoPreview,setLogoPreview]=useState(""),[displayName,setDisplayName]=useState(profile?.display_name||""),[ownerPhone,setOwnerPhone]=useState(profile?.phone||"");
  useEffect(()=>{setName(shop.name||"");setCategory(shop.category||"other");setPhone(shop.phone||"");setAddress(shop.address||"");},[shop.id,shop.name,shop.category,shop.phone,shop.address]);
  useEffect(()=>{setDisplayName(profile?.display_name||"");setOwnerPhone(profile?.phone||"");},[profile?.display_name,profile?.phone]);
@@ -9,7 +9,8 @@ export default function ShopProfilePage({shop,profile,onSaveShop,onSaveProfile,b
  const choose=(file,kind)=>{if(kind==="cover"){if(coverPreview)URL.revokeObjectURL(coverPreview);setCover(file);setCoverPreview(file?URL.createObjectURL(file):"");}else{if(logoPreview)URL.revokeObjectURL(logoPreview);setLogo(file);setLogoPreview(file?URL.createObjectURL(file):"");}};
  const categoryName=SHOP_CATEGORIES.find(x=>x.id===category)?.title||"দোকান";
  return <section className="dk-module-page dk-profile-page">
-  <div className="dk-page-title"><button onClick={onBack}>←</button><div><small>SHOP SETTINGS</small><h1>দোকানের প্রোফাইল</h1><p>আপনার দোকানের পরিচিতি ও যোগাযোগের তথ্য</p></div></div>
+  <div className="dk-page-title"><button onClick={onBack}>←</button><div><small>দোকানের সেটিংস</small><h1>দোকানের প্রোফাইল</h1><p>আপনার দোকানের পরিচিতি ও যোগাযোগের তথ্য</p></div></div>
+  <button className="dk-add-shop-card" type="button" onClick={onNewShop}><span>＋</span><div><b>নতুন দোকান যোগ করুন</b><small>আরেকটি দোকানের হিসাব আলাদাভাবে রাখুন</small></div><i>→</i></button>
   <div className="dk-profile-hero">
    <div className="dk-profile-cover" style={(coverPreview||shop.cover_url)?{backgroundImage:"linear-gradient(90deg,rgba(0,43,28,.23),rgba(0,43,28,.12)),url("+(coverPreview||shop.cover_url)+")"}:undefined}>
     <div className="dk-profile-cover-caption"><span>দোকানের ব্যানার</span><small>আপনার দোকানকে সুন্দরভাবে তুলে ধরুন</small></div>
