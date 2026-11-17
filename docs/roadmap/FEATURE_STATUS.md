@@ -4,6 +4,9 @@ Status meanings: LIVE FOUNDATION = code/database exists; PARTIAL = usable slice 
 
 **Verification note — 13 November 2026:** Production homepage and `/admin` placeholder were browser-checked. The shop creation RPC was exercised with a test account and created the shop, owner membership and trial together; the test shop was deleted afterwards. Cross-user RLS read checks for `shop_sales`, `shop_expenses`, `products`, `shops`, `suppliers`, `employees` and `supplier_ledger_view` returned zero rows for the unrelated account. Supplier/employee shop_id columns and the SECURITY INVOKER ledger view were also verified; legacy supplier and employee row counts remained unchanged. This is a focused smoke test, not a complete penetration test or a complete multi-tenant certification.
 
+
+**Security verification — 18 November 2026:** A controlled rollback-only SQL test reproduced a cross-shop membership reassignment path: a shop owner could reassign their own membership to another owner's shop and read one sale row. Phase 0 migration `20261117223549_harden_shop_membership_permissions_phase0` removed the direct membership UPDATE policy and revoked UPDATE from `PUBLIC`, `anon`, and `authenticated`. Verification confirmed that authenticated INSERT/SELECT and `create_shop_with_trial` remain available, cross-shop sales visibility is now zero, and shop/membership/subscription row counts are unchanged. Supabase Auth leaked-password protection remains an open Dashboard setting. This is a focused security fix, not a full penetration test.
+
 | Feature | Status | Notes |
 |---|---|---|
 | DokanKhata branding and root experience | LIVE FOUNDATION | Root route now loads modular app |

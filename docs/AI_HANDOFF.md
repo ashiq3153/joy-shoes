@@ -48,6 +48,7 @@ This file is the handoff contract for ChatGPT, other AI agents and future develo
 - Phase 5: PWA/offline, employee invites, permissions, exports, backup and domain migration.
 
 ## Known current limitations
+- Phase 0 security hardening (18 November 2026): the unsafe `shop_memberships_owner_update` policy was removed and direct UPDATE permission was revoked from `PUBLIC`, `anon`, and `authenticated`. Authenticated INSERT/SELECT remain, and shop creation through `create_shop_with_trial` was regression-tested in a rolled-back transaction. Do not restore client-side membership updates; any future membership management must use an owner-verified, server-controlled workflow with cross-tenant tests. Supabase Auth leaked-password protection is still pending in the Dashboard.
 - New root dashboard uses shop_sales and shop_expenses. It does not yet import legacy daily_sales / expenses into these new tables.
 - Legacy accounting UI stays available at /workspace for the primary legacy shop.
 - The /admin path is only a placeholder; no admin privileges or actions are exposed there.
